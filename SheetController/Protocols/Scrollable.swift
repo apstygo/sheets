@@ -13,12 +13,12 @@ public protocol Scrollable: class {
     var scrollView: UIScrollView? { get }
 }
 
-public extension UITableViewController: Scrollable {
-    var scrollView: UIScrollView? { return tableView }
+extension UITableViewController: Scrollable {
+    public var scrollView: UIScrollView? { return tableView }
 }
 
-public extension UINavigationController: Scrollable {
-    var scrollView: UIScrollView? {
+extension UINavigationController: Scrollable {
+    public var scrollView: UIScrollView? {
         if let tableVC = viewControllers.last as? UITableViewController {
             return tableVC.scrollView
         }
