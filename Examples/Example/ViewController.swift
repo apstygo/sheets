@@ -7,7 +7,7 @@
 //
 
 import UIKit
-import SheetController
+import sheets
 
 class ViewController: UIViewController, UITableViewDataSource {
 

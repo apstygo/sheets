@@ -4,6 +4,6 @@ target 'Example' do
 
   use_frameworks!
 
-  pod 'SheetController', :path => '..'
+  pod 'sheets', :path => '..'
 
 end
