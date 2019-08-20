@@ -9,15 +9,15 @@
 import Foundation
 import UIKit
 
-protocol Scrollable: class {
+public protocol Scrollable: class {
     var scrollView: UIScrollView? { get }
 }
 
-extension UITableViewController: Scrollable {
+public extension UITableViewController: Scrollable {
     var scrollView: UIScrollView? { return tableView }
 }
 
-extension UINavigationController: Scrollable {
+public extension UINavigationController: Scrollable {
     var scrollView: UIScrollView? {
         if let tableVC = viewControllers.last as? UITableViewController {
             return tableVC.scrollView

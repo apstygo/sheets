@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Stevia
 
-enum Anchor {
+public enum Anchor {
     case ratio(Double)
     case pointsFromTop(CGFloat)
     case pointsFromBottom(CGFloat)
@@ -34,7 +34,7 @@ private enum Constant {
     static let viewControllerPopAnimationDuration: TimeInterval = 0.3
 }
 
-class SheetController: UIViewController, UIScrollViewDelegate {
+public class SheetController: UIViewController, UIScrollViewDelegate {
 
     private enum GestureState {
         case idle
@@ -60,7 +60,7 @@ class SheetController: UIViewController, UIScrollViewDelegate {
     private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
-    var expandGestureEnabled = true
+    public var expandGestureEnabled = true
     private var isExpanded = true
 
     private var _mainViewController: UIViewController
@@ -97,7 +97,7 @@ class SheetController: UIViewController, UIScrollViewDelegate {
         return dimming
     }()
 
-    init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
+    public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
         _mainViewController = mainViewController
         _viewControllers = [rootViewController]
         _topViewController = rootViewController
@@ -185,7 +185,7 @@ class SheetController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - Position Adjustment and Animation
 
-    func snapToAnchor(atIndex index: Int, animated: Bool) {
+    public func snapToAnchor(atIndex index: Int, animated: Bool) {
         assert(index < anchorPoints.count, "Cannot snap to anchor, because index is out of bounds")
         moveOrigin(to: anchorPoints[index], animated: animated)
     }
@@ -335,13 +335,13 @@ class SheetController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - Layout
 
-    func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
+    public func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
         self.anchorModels = anchors
         adjustMainVCSafeAreaInsets()
         snapToAnchor(atIndex: index, animated: animated)
     }
 
-    var anchors: [Anchor] {
+    public var anchors: [Anchor] {
         return anchorModels
     }
 
@@ -475,11 +475,11 @@ class SheetController: UIViewController, UIScrollViewDelegate {
                    completion: completion)
     }
 
-    var topViewController: UIViewController {
+    public var topViewController: UIViewController {
         return _topViewController
     }
 
-    func pushViewController(_ viewController: UIViewController, animated: Bool) {
+    public func pushViewController(_ viewController: UIViewController, animated: Bool) {
         cycle(fromViewController: _topViewController,
               toViewController: viewController,
               transitionType: .push,
@@ -489,7 +489,7 @@ class SheetController: UIViewController, UIScrollViewDelegate {
     }
 
     @discardableResult
-    func popViewController(animated: Bool) -> UIViewController? {
+    public func popViewController(animated: Bool) -> UIViewController? {
         guard _viewControllers.count > 1 else { return nil }
 
         let from = _viewControllers.popLast()!
