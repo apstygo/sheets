@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2EF16296230BF1E8001C347A /* SheetController.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF16294230BF1E8001C347A /* SheetController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2EF1629D230BF29B001C347A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2EF1629C230BF29B001C347A /* Assets.xcassets */; };
 		2EF162A4230BF2AC001C347A /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1629F230BF2AC001C347A /* Collection+Extension.swift */; };
 		2EF162A5230BF2AC001C347A /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF162A0230BF2AC001C347A /* UIView+Extension.swift */; };
 		2EF162A6230BF2AC001C347A /* FloatingPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF162A1230BF2AC001C347A /* FloatingPoint+Extension.swift */; };
@@ -22,7 +21,6 @@
 		2EF16291230BF1E8001C347A /* SheetController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SheetController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2EF16294230BF1E8001C347A /* SheetController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SheetController.h; sourceTree = "<group>"; };
 		2EF16295230BF1E8001C347A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		2EF1629C230BF29B001C347A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2EF1629F230BF2AC001C347A /* Collection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		2EF162A0230BF2AC001C347A /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
 		2EF162A1230BF2AC001C347A /* FloatingPoint+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FloatingPoint+Extension.swift"; sourceTree = "<group>"; };
@@ -67,7 +65,6 @@
 				2EF16295230BF1E8001C347A /* Info.plist */,
 				2EF162A9230BF2B5001C347A /* Protocols */,
 				2EF1629E230BF2AC001C347A /* Extensions */,
-				2EF1629C230BF29B001C347A /* Assets.xcassets */,
 			);
 			path = SheetController;
 			sourceTree = "<group>";
@@ -161,7 +158,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EF1629D230BF29B001C347A /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

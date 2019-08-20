@@ -503,10 +503,12 @@ class SheetController: UIViewController, UIScrollViewDelegate {
         return from
     }
 
-    private func addCloseButton(toViewController viewController: UIViewController, transitionType: TransitionType) {
+    private func addCloseButton(toViewController viewController: UIViewController,
+                                transitionType: TransitionType,
+                                image: UIImage? = nil) {
         guard transitionType == .push else { return }
         let button = UIButton()
-        button.setImage(UIImage(named: "closeIcon"), for: .normal)
+        button.setImage(image, for: .normal)
         button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
 
         let availableSize = viewController.view.bounds.size
