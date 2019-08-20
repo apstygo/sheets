@@ -1,0 +1,23 @@
+PODS:
+  - SheetController (0.3.1):
+    - SteviaLayout (~> 4)
+  - SteviaLayout (4.5.0)
+
+DEPENDENCIES:
+  - SheetController (from `..`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SteviaLayout
+
+EXTERNAL SOURCES:
+  SheetController:
+    :path: ".."
+
+SPEC CHECKSUMS:
+  SheetController: ce97c007266976b9b3e9c9f6762216bd9f2e796e
+  SteviaLayout: aa64a62810544348c9e328a6521cb9160fa82ec6
+
+PODFILE CHECKSUM: 20fc541b5190e0fe7f99fb5f1f2406e5f8d714d8
+
+COCOAPODS: 1.7.2
