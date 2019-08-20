@@ -28,8 +28,8 @@ Pod::Spec.new do |spec|
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
-  spec.source_files  = "sheets/sources/sheets/**/*"
-  spec.exclude_files = "sheets/sources/sheets/Info.plist"
+  spec.source_files  = "Sources/sheets/**/*"
+  spec.exclude_files = "Sources/sheets/Info.plist"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
 
