@@ -305,7 +305,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0.1.0.0;
+				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 39J6CQQY42;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -319,7 +319,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apstygo.SheetController;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -333,7 +333,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 0.1.0.0;
+				CURRENT_PROJECT_VERSION = 0.2.0.0;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 39J6CQQY42;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -347,7 +347,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1.0;
+				MARKETING_VERSION = 0.2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.apstygo.SheetController;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
