@@ -29,6 +29,7 @@ Pod::Spec.new do |spec|
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
   spec.source_files  = "SheetController/**/*"
+  spec.exclude_files = "SheetController/Info.plist"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
