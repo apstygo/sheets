@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		2E8A4BC1230C202200D4C65B /* sheets.podspec in Resources */ = {isa = PBXBuildFile; fileRef = 2E8A4BC0230C202200D4C65B /* sheets.podspec */; };
-		2EF16296230BF1E8001C347A /* sheets.h in Headers */ = {isa = PBXBuildFile; fileRef = 2EF16294230BF1E8001C347A /* sheets.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2EF162A4230BF2AC001C347A /* Collection+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF1629F230BF2AC001C347A /* Collection+Extension.swift */; };
 		2EF162A5230BF2AC001C347A /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF162A0230BF2AC001C347A /* UIView+Extension.swift */; };
 		2EF162A6230BF2AC001C347A /* FloatingPoint+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EF162A1230BF2AC001C347A /* FloatingPoint+Extension.swift */; };
@@ -21,7 +20,6 @@
 /* Begin PBXFileReference section */
 		2E8A4BC0230C202200D4C65B /* sheets.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; fileEncoding = 4; path = sheets.podspec; sourceTree = "<group>"; };
 		2EF16291230BF1E8001C347A /* sheets.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sheets.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2EF16294230BF1E8001C347A /* sheets.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = sheets.h; sourceTree = "<group>"; };
 		2EF16295230BF1E8001C347A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2EF1629F230BF2AC001C347A /* Collection+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Collection+Extension.swift"; sourceTree = "<group>"; };
 		2EF162A0230BF2AC001C347A /* UIView+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
@@ -64,7 +62,6 @@
 			isa = PBXGroup;
 			children = (
 				2EF162AC230BF2C1001C347A /* SheetController.swift */,
-				2EF16294230BF1E8001C347A /* sheets.h */,
 				2EF16295230BF1E8001C347A /* Info.plist */,
 				2EF162A9230BF2B5001C347A /* Protocols */,
 				2EF1629E230BF2AC001C347A /* Extensions */,
@@ -99,7 +96,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2EF16296230BF1E8001C347A /* sheets.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
