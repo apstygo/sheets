@@ -1,22 +1,15 @@
 PODS:
-  - sheets (0.3.2):
-    - SteviaLayout (~> 4)
-  - SteviaLayout (4.5.0)
+  - sheets (0.3.3)
 
 DEPENDENCIES:
   - sheets (from `..`)
-
-SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
-    - SteviaLayout
 
 EXTERNAL SOURCES:
   sheets:
     :path: ".."
 
 SPEC CHECKSUMS:
-  sheets: 54e63ac23e05347e3ea26438270c1bb2f1dffc6c
-  SteviaLayout: aa64a62810544348c9e328a6521cb9160fa82ec6
+  sheets: 35d600832e702f3a2f3ec668b758df997bb15ad0
 
 PODFILE CHECKSUM: 4f4ef5c547d81dcab61a21a5b456c0bab6dc4c16
 
