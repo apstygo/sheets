@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import Stevia
 
 public enum Anchor {
     case ratio(Double)
@@ -123,11 +122,9 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         view.backgroundColor = .systemBackground
 
         view.addSubview(dimmingEffectView)
-        dimmingEffectView.translatesAutoresizingMaskIntoConstraints = false
         dimmingEffectView.fillContainer()
 
         wrapperView.addSubview(contentView)
-        contentView.translatesAutoresizingMaskIntoConstraints = false
         contentView.fillContainer()
         view.addSubview(wrapperView)
     }

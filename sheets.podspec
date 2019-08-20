@@ -32,7 +32,5 @@ Pod::Spec.new do |spec|
   spec.exclude_files = "sheets/Info.plist"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
-  
-  spec.dependency 'SteviaLayout', '~> 4'
 
 end
