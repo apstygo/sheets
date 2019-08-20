@@ -118,7 +118,7 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         bindGestureRecognizers()
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
 
@@ -132,14 +132,14 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         view.addSubview(wrapperView)
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         contentView.addGestureRecognizer(panRecognizer)
         tapRecognizer.cancelsTouchesInView = false
         contentView.addGestureRecognizer(tapRecognizer)
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         let targetOrigin = anchorPoints.min()!
@@ -288,11 +288,11 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
 
     // MARK: - UIScrollViewDelegate
 
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         contentState = .dragging(lastContentOffset: scrollView.contentOffset)
     }
 
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         guard case let .dragging(lastContentOffset) = contentState else { return }
 
         defer {
@@ -320,9 +320,9 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    func scrollViewWillEndDragging(_ scrollView: UIScrollView,
-                                   withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+    public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+                                          withVelocity velocity: CGPoint,
+                                          targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         contentState = .idle
 
         guard origin > anchorPoints.min()! else { return }
