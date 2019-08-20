@@ -1,6 +1,6 @@
 //
 //  CG+Extension.swift
-//  SheetController
+//  sheets
 //
 //  Created by Artyom Pstygo on 16.08.2019.
 //  Copyright © 2019 Artyom Pstygo. All rights reserved.

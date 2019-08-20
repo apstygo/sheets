@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:SheetController.xcodeproj">
+      location = "self:/Users/apstygo/Developer/XCodeProjects/Libraries/SheetController/sheets.xcodeproj">
    </FileRef>
 </Workspace>

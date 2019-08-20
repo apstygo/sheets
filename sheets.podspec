@@ -2,12 +2,12 @@ Pod::Spec.new do |spec|
 
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
-  spec.name         = "SheetController"
+  spec.name         = "sheets"
   spec.version      = "0.3.2"
   spec.summary      = "A standard-looking sheet controller with fluid animation."
-  spec.description  = "SheetController provides an API similar to that of UINavigationController, with push and pop functionality. It has customizable anchor points and positioning behavior."
+  spec.description  = "sheets provides an API similar to that of UINavigationController, with push and pop functionality. It has customizable anchor points and positioning behavior."
 
-  spec.homepage     = "https://github.com/apstygo/SheetController.git"
+  spec.homepage     = "https://github.com/apstygo/sheets.git"
 
   # ―――  Spec License  ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
@@ -24,12 +24,12 @@ Pod::Spec.new do |spec|
 
   # ――― Source Location ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
-  spec.source       = { :git => "https://github.com/apstygo/SheetController.git", :tag => "#{spec.version}" }
+  spec.source       = { :git => "https://github.com/apstygo/sheets.git", :tag => "#{spec.version}" }
 
   # ――― Source Code ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
-  spec.source_files  = "SheetController/**/*"
-  spec.exclude_files = "SheetController/Info.plist"
+  spec.source_files  = "sheets/**/*"
+  spec.exclude_files = "sheets/Info.plist"
 
   # ――― Project Settings ――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
