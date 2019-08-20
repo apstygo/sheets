@@ -74,7 +74,11 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         content.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         content.layer.cornerRadius = Constant.cornerRadius
         content.layer.masksToBounds = true
-        content.backgroundColor = .secondarySystemBackground
+        if #available(iOS 13, *) {
+            content.backgroundColor = .secondarySystemBackground
+        } else {
+            content.backgroundColor = .white
+        }
         return content
     }()
 
@@ -119,7 +123,11 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
 
     public override func loadView() {
         view = UIView()
-        view.backgroundColor = .systemBackground
+        if #available(iOS 13.0, *) {
+            view.backgroundColor = .systemBackground
+        } else {
+            view.backgroundColor = .white
+        }
 
         view.addSubview(dimmingEffectView)
         dimmingEffectView.fillContainer()
