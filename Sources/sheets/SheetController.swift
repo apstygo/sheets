@@ -59,6 +59,7 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
     // MARK: - Options
 
     public var expandGestureEnabled = true
+    public var closeButtonImage: UIImage?
 
     // MARK: - Private vars
 
@@ -514,11 +515,10 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
     }
 
     private func addCloseButton(toViewController viewController: UIViewController,
-                                transitionType: TransitionType,
-                                image: UIImage? = nil) {
+                                transitionType: TransitionType) {
         guard transitionType == .push else { return }
         let button = UIButton()
-        button.setImage(image, for: .normal)
+        button.setImage(closeButtonImage, for: .normal)
         button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
 
         let availableSize = viewController.view.bounds.size
