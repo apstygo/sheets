@@ -56,10 +56,15 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         case pop
     }
 
+    // MARK: - Options
+
+    public var expandGestureEnabled = true
+
+    // MARK: - Private vars
+
     private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
-    public var expandGestureEnabled = true
     private var isExpanded = true
 
     private var _mainViewController: UIViewController
