@@ -17,10 +17,12 @@ public enum Anchor {
 
 private enum Constant {
     static let dimmingEffectViewMaxAlpha: CGFloat = 0.3
-    static let closeButtonSize: CGFloat = 24
     static let primaryMargin: CGFloat = 20
     static let cornerRadius: CGFloat = 10
     static let defaultPointsFromTopOffset: CGFloat = 20
+
+    static let closeButtonSize: CGFloat = 28
+    static let closeButtonContentInset: CGFloat = 4
 
     static let shadowOffset = CGSize(width: 0, height: 16)
     static let shadowRadius: CGFloat = 16
@@ -521,6 +523,7 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         button.setImage(closeButtonImage, for: .normal)
         button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
 
+        button.contentEdgeInsets = UIEdgeInsets(Constant.closeButtonContentInset)
         let availableSize = viewController.view.bounds.size
         button.frame = CGRect(x: availableSize.width - Constant.primaryMargin - Constant.closeButtonSize,
                               y: Constant.primaryMargin,
