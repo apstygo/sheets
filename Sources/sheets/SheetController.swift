@@ -152,14 +152,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
         contentView.addGestureRecognizer(tapRecognizer)
     }
 
+    private var appearsFirstTime = true
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        let targetOrigin = anchorPoints.min()!
-        origin = targetOrigin
-        adjustContainerSize(targetOrigin: targetOrigin)
-
-        adjustMainVCSafeAreaInsets()
+        if appearsFirstTime {
+            appearsFirstTime = false
+            origin = anchorPoints.max()!
+            adjustContainerSize(targetOrigin: anchorPoints.min()!)
+            adjustMainVCSafeAreaInsets()
+        }
     }
 
     required init?(coder: NSCoder) {
