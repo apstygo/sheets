@@ -21,8 +21,9 @@ private enum Constant {
     static let cornerRadius: CGFloat = 10
     static let defaultPointsFromTopOffset: CGFloat = 20
 
-    static let closeButtonSize: CGFloat = 28
-    static let closeButtonContentInset: CGFloat = 4
+    static let closeButtonSize: CGFloat = 30
+    static let closeButtonTopMargin: CGFloat = 7
+    static let closeButtonRightMargin: CGFloat = 10
 
     static let shadowOffset = CGSize(width: 0, height: 16)
     static let shadowRadius: CGFloat = 16
@@ -532,22 +533,49 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private func addCloseButton(toViewController viewController: UIViewController,
                                 transitionType: TransitionType) {
         guard transitionType == .push else { return }
-        let button = UIButton()
-        button.setImage(closeButtonImage, for: .normal)
-        button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
 
-        button.contentEdgeInsets = UIEdgeInsets(Constant.closeButtonContentInset)
-        let availableSize = viewController.view.bounds.size
-        button.frame = CGRect(x: availableSize.width - Constant.primaryMargin - Constant.closeButtonSize,
-                              y: Constant.primaryMargin,
-                              width: Constant.closeButtonSize,
-                              height: Constant.closeButtonSize)
-        viewController.view.addSubview(button)
+        if let navigationController = viewController as? UINavigationController {
+            let systemItem: UIBarButtonItem.SystemItem
+            if #available(iOS 13, *) {
+                systemItem = .close
+            } else {
+                systemItem = .done
+            }
+
+            let barButton = UIBarButtonItem(barButtonSystemItem: systemItem,
+                                            target: self,
+                                            action: #selector(closeBarButtonTap(_:)))
+            navigationController.viewControllers[0].navigationItem.setRightBarButton(barButton, animated: true)
+
+        } else {
+            let button = UIButton()
+            button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
+
+            var image = closeButtonImage
+            if #available(iOS 13, *) {
+                button.imageView?.tintColor = .systemGray2
+                button.imageView?.contentMode = .scaleAspectFit
+                let largeConfig = UIImage.SymbolConfiguration(textStyle: .largeTitle)
+                image = closeButtonImage ?? UIImage(systemName: "xmark.circle.fill", withConfiguration: largeConfig)
+            }
+            button.setImage(image, for: .normal)
+
+            let availableSize = viewController.view.bounds.size
+            button.frame = CGRect(x: availableSize.width - Constant.closeButtonRightMargin - Constant.closeButtonSize,
+                                  y: Constant.closeButtonTopMargin,
+                                  width: Constant.closeButtonSize,
+                                  height: Constant.closeButtonSize)
+            viewController.view.addSubview(button)
+        }
     }
 
     @objc private func closeButtonTap(_ sender: UIButton) {
         popViewController(animated: true)
         sender.removeFromSuperview()
+    }
+
+    @objc private func closeBarButtonTap(_ sender: UIBarButtonItem) {
+        popViewController(animated: true)
     }
 
 }
