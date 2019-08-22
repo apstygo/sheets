@@ -27,7 +27,7 @@ private enum Constant {
     static let shadowOffset = CGSize(width: 0, height: 16)
     static let shadowRadius: CGFloat = 16
     static let shadowColor = UIColor.black.cgColor
-    static let shadowOpacity: Float = 0.16
+    static let shadowOpacity: Float = 0.5
 
     static let defaultSpringDamping: CGFloat = 0.8
     static let originAnimationDuration: TimeInterval = 0.5
