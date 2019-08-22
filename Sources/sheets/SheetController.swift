@@ -497,6 +497,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
                    options: options,
                    animations: animations,
                    completion: completion)
+
+        bindAsScrollable(viewController: newVC)
     }
 
     public var topViewController: UIViewController {
