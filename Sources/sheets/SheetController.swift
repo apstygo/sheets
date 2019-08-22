@@ -35,7 +35,7 @@ private enum Constant {
     static let viewControllerPopAnimationDuration: TimeInterval = 0.3
 }
 
-public class SheetController: UIViewController, UIScrollViewDelegate {
+public class SheetController: UIViewController, ScrollableDelegate {
 
     private enum GestureState {
         case idle
@@ -69,6 +69,7 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
     private var isExpanded = true
+    private weak var currentScrollable: Scrollable?
 
     private var _mainViewController: UIViewController
     private var _viewControllers: [UIViewController]
@@ -125,8 +126,6 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
 
         layoutMainController()
         layoutRootController()
-
-        bindGestureRecognizers()
     }
 
     public override func loadView() {
@@ -299,13 +298,13 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         return anchor
     }
 
-    // MARK: - UIScrollViewDelegate
+    // MARK: - ScrollableDelegate
 
-    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    public func scrollableWillBeginDragging(_ scrollView: UIScrollView) {
         contentState = .dragging(lastContentOffset: scrollView.contentOffset)
     }
 
-    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    public func scrollableDidScroll(_ scrollView: UIScrollView) {
         guard case let .dragging(lastContentOffset) = contentState else { return }
 
         defer {
@@ -333,7 +332,7 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-    public func scrollViewWillEndDragging(_ scrollView: UIScrollView,
+    public func scrollableWillEndDragging(_ scrollView: UIScrollView,
                                           withVelocity velocity: CGPoint,
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         contentState = .idle
@@ -366,10 +365,12 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
     }
 
     private func layoutRootController() {
+        let rootController = _viewControllers[0]
         addAsChild(_viewControllers[0]) { rootView in
             rootView.frame = contentView.bounds
             contentView.addSubview(rootView)
         }
+        bindAsScrollable(viewController: rootController)
     }
 
     private var availableFrame: CGRect {
@@ -417,9 +418,19 @@ public class SheetController: UIViewController, UIScrollViewDelegate {
         childController.removeFromParent()
     }
 
-    private func bindGestureRecognizers() {
-        if let scrollable = _viewControllers.first as? Scrollable, let scrollView = scrollable.scrollView {
-            scrollView.delegate = self
+    private func bindAsScrollable(viewController: UIViewController) {
+        if let currentScrollable = currentScrollable {
+            currentScrollable.delegate = nil
+        }
+
+        var candidateVC = viewController
+        if let navigationController = viewController as? UINavigationController {
+            candidateVC = navigationController.viewControllers[0]
+        }
+
+        if let scrollable = candidateVC as? Scrollable {
+            scrollable.delegate = self
+            currentScrollable = scrollable
         }
     }
 
