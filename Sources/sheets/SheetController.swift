@@ -239,6 +239,14 @@ public class SheetController: UIViewController, ScrollableDelegate {
         moveOrigin(to: anchorPoints[index], animated: animated)
     }
 
+    public func expand(animated: Bool) {
+        snapToAnchor(atIndex: 0, animated: animated)
+    }
+
+    public func collapse(animated: Bool) {
+        snapToAnchor(atIndex: anchors.count - 1, animated: animated)
+    }
+
     private var origin: CGFloat {
         get {
             return wrapperView.frame.origin.y
