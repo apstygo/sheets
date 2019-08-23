@@ -62,15 +62,20 @@ public class SheetController: UIViewController, ScrollableDelegate {
     // MARK: - Options
 
     public var expandGestureEnabled = true
+    public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
-    // MARK: - Private vars
+    // MARK: - State
 
     private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
     private var isExpanded = true
+    private var appearsFirstTime = true
+    private var tabBarIsHidden = false
     private weak var currentScrollable: Scrollable?
+
+    // MARK: - View Controllers
 
     private var _mainViewController: UIViewController
     private var _viewControllers: [UIViewController]
@@ -152,7 +157,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         contentView.addGestureRecognizer(tapRecognizer)
     }
 
-    private var appearsFirstTime = true
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if appearsFirstTime {
@@ -241,6 +245,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
                             animated: Bool,
                             velocity: CGFloat = 0,
                             completion: ((Bool) -> Void)? = nil) {
+        isExpanded = newOriginY == anchorPoints[0]
+
         let animations = {
             self.origin = newOriginY
         }
@@ -252,6 +258,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
                        options: [.allowUserInteraction, .beginFromCurrentState, .curveEaseOut],
                        animations: animations,
                        completion: completion)
+
+        setTabBarHidden(isExpanded, animated: animated)
     }
 
     private func moveOriginToTheNearestAnchor(withVelocity velocity: CGFloat,
@@ -270,8 +278,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
             targetAnchor = projectionAnchor
         }
 
-        isExpanded = targetAnchor == anchorPoints[0]
-
         moveOrigin(to: targetAnchor, animated: true, velocity: velocity)
     }
 
@@ -280,6 +286,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
             return anchorPoints.min()! - sqrt(anchorPoints.min()! - target)
         } else if target > anchorPoints.max()! {
             return anchorPoints.max()! + sqrt(target - anchorPoints.max()!)
+        }
+        return target
+    }
+
+    private func trimTargetScrollableOrigin(_ target: CGFloat) -> CGFloat {
+        if target < anchorPoints.min()! {
+            return anchorPoints.min()!
+        } else if target > anchorPoints.max()! {
+            return anchorPoints.max()!
         }
         return target
     }
@@ -298,6 +313,36 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
 
         return anchor
+    }
+
+    private func setTabBarHidden(_ hide: Bool, animated: Bool) {
+        guard hidesTabBarUponExpansion,
+            let tabBarController = tabBarController,
+            hide != tabBarIsHidden else { return }
+
+        let currentFrame = tabBarController.tabBar.frame
+        var newFrame = currentFrame
+        var options: UIView.AnimationOptions = [.beginFromCurrentState]
+
+        if hide {
+            newFrame.origin.y += newFrame.size.height
+            options.formUnion(.curveEaseIn)
+        } else {
+            newFrame.origin.y -= newFrame.size.height
+            options.formUnion(.curveEaseOut)
+        }
+
+        let animations = {
+            tabBarController.tabBar.frame = newFrame
+        }
+
+        UIView.animate(withDuration: animated ? 0.25 : 0,
+                       delay: 0,
+                       options: options,
+                       animations: animations,
+                       completion: nil)
+
+        tabBarIsHidden = hide
     }
 
     // MARK: - ScrollableDelegate
@@ -325,7 +370,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
                 scrollView.contentOffset.y += diff
             }
 
-            origin = trimTargetHeaderOrigin(origin + diff)
+            origin = trimTargetScrollableOrigin(origin + diff)
 
             scrollView.showsVerticalScrollIndicator = false
 
@@ -339,7 +384,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
                                           targetContentOffset: UnsafeMutablePointer<CGPoint>) {
         contentState = .idle
 
-        guard origin > anchorPoints.min()! else { return }
+        guard origin > anchorPoints.min()! else { setTabBarHidden(true, animated: true); return }
 
         /// Stop scrolling
         targetContentOffset.pointee = scrollView.contentOffset
