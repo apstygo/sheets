@@ -34,6 +34,8 @@ private enum Constant {
     static let originAnimationDuration: TimeInterval = 0.5
     static let viewControllerPushAnimationDuration: TimeInterval = 0.5
     static let viewControllerPopAnimationDuration: TimeInterval = 0.3
+
+    static let tabBarAnimationDuration: TimeInterval = 0.25
 }
 
 public class SheetController: UIViewController, ScrollableDelegate {
@@ -365,7 +367,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
             tabBarController.tabBar.frame = newFrame
         }
 
-        UIView.animate(withDuration: animated ? 0.25 : 0,
+        UIView.animate(withDuration: animated ? Constant.tabBarAnimationDuration : 0,
                        delay: 0,
                        options: options,
                        animations: animations,
