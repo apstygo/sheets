@@ -62,6 +62,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     // MARK: - Options
 
     public var expandGestureEnabled = true
+    public var collapseGestureEnabled = true
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
@@ -70,7 +71,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
-    private var isExpanded = true
+    private var isExpanded = false
     private var appearsFirstTime = true
     private var tabBarIsHidden = false
     private weak var currentScrollable: Scrollable?
@@ -83,6 +84,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
     private lazy var contentTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleContentTap(_:)))
+    private lazy var dimmingViewTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDimmingViewTap(_:)))
 
     private lazy var contentView: UIView = {
         let content = UIView()
@@ -152,9 +154,13 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+
         contentView.addGestureRecognizer(panRecognizer)
         contentTapRecognizer.cancelsTouchesInView = false
         contentView.addGestureRecognizer(contentTapRecognizer)
+
+        dimmingViewTapRecognizer.cancelsTouchesInView = false
+        dimmingEffectView.addGestureRecognizer(dimmingViewTapRecognizer)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -198,6 +204,13 @@ public class SheetController: UIViewController, ScrollableDelegate {
         if expandGestureEnabled, !isExpanded, sender.location(in: contentView).y < headerHeight {
             snapToAnchor(atIndex: 0, animated: true)
             isExpanded = true
+        }
+    }
+
+    @objc private func handleDimmingViewTap(_ sender: UITapGestureRecognizer) {
+        if collapseGestureEnabled, isExpanded {
+            snapToAnchor(atIndex: 1, animated: true)
+            isExpanded = false
         }
     }
 
