@@ -81,8 +81,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private var _viewControllers: [UIViewController]
     private var _topViewController: UIViewController
 
-    private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handleHeaderPanRecognizer(_:)))
-    private lazy var tapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGestureRecognizer(_:)))
+    private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+    private lazy var contentTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleContentTap(_:)))
 
     private lazy var contentView: UIView = {
         let content = UIView()
@@ -153,8 +153,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
         contentView.addGestureRecognizer(panRecognizer)
-        tapRecognizer.cancelsTouchesInView = false
-        contentView.addGestureRecognizer(tapRecognizer)
+        contentTapRecognizer.cancelsTouchesInView = false
+        contentView.addGestureRecognizer(contentTapRecognizer)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -173,7 +173,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     // MARK: - Gestures
 
-    @objc private func handleHeaderPanRecognizer(_ sender: UIPanGestureRecognizer) {
+    @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
         case .began:
             gestureState = .dragging(initialOrigin: origin)
@@ -194,7 +194,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
-    @objc private func handleTapGestureRecognizer(_ sender: UITapGestureRecognizer) {
+    @objc private func handleContentTap(_ sender: UITapGestureRecognizer) {
         if expandGestureEnabled, !isExpanded, sender.location(in: contentView).y < headerHeight {
             snapToAnchor(atIndex: 0, animated: true)
             isExpanded = true
