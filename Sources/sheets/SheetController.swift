@@ -213,8 +213,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
             moveOriginToTheNearestAnchor(withVelocity: velocity)
         case .cancelled, .failed:
             gestureState = .idle
-        case .possible:
-            break
+        case .possible: break
+        @unknown default: break
         }
     }
 
