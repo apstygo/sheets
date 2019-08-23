@@ -155,12 +155,21 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        // Gesture recognizer bindings
+
         contentView.addGestureRecognizer(panRecognizer)
         contentTapRecognizer.cancelsTouchesInView = false
         contentView.addGestureRecognizer(contentTapRecognizer)
 
         dimmingViewTapRecognizer.cancelsTouchesInView = false
         dimmingEffectView.addGestureRecognizer(dimmingViewTapRecognizer)
+
+        // TabBar hiding fix
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAppWillEnterForeground),
+                                               name: UIApplication.willEnterForegroundNotification,
+                                               object: nil)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -170,6 +179,13 @@ public class SheetController: UIViewController, ScrollableDelegate {
             origin = anchorPoints.max()!
             adjustContainerSize(targetOrigin: anchorPoints.min()!)
             adjustMainVCSafeAreaInsets()
+        }
+    }
+
+    @objc private func handleAppWillEnterForeground() {
+        if tabBarIsHidden, let tabBarController = tabBarController {
+            let tabBar = tabBarController.tabBar
+            tabBar.frame.origin.y += tabBar.frame.size.height
         }
     }
 
