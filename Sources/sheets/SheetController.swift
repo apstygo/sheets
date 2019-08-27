@@ -113,7 +113,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }()
 
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
-        mainViewController = mainViewController
+        self.mainViewController = mainViewController
         viewControllers = [rootViewController]
 
         let bottomAnchorConstant: CGFloat
