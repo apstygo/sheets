@@ -9,12 +9,6 @@
 import Foundation
 import UIKit
 
-public enum Anchor {
-    case ratio(Double)
-    case pointsFromTop(CGFloat)
-    case pointsFromBottom(CGFloat)
-}
-
 private enum Constant {
     static let dimmingEffectViewMaxAlpha: CGFloat = 0.3
     static let primaryMargin: CGFloat = 20
