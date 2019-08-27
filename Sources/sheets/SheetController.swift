@@ -80,7 +80,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private var _mainViewController: UIViewController
     private var _viewControllers: [UIViewController]
-    private var _topViewController: UIViewController
 
     private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
     private lazy var contentTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleContentTap(_:)))
@@ -120,7 +119,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
         _mainViewController = mainViewController
         _viewControllers = [rootViewController]
-        _topViewController = rootViewController
 
         let bottomAnchorConstant: CGFloat
         if let navBar = (rootViewController as? UINavigationController)?.navigationBar {
@@ -482,7 +480,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     private var headerHeight: CGFloat {
-        if let navController = _topViewController as? UINavigationController {
+        if let navController = topViewController as? UINavigationController {
             return navController.navigationBar.bounds.height
         }
         return 0
@@ -579,16 +577,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     public var topViewController: UIViewController {
-        return _topViewController
+        return _viewControllers.last!
     }
 
     public func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        cycle(fromViewController: _topViewController,
+        cycle(fromViewController: topViewController,
               toViewController: viewController,
               transitionType: .push,
               animated: animated)
         _viewControllers.append(viewController)
-        _topViewController = viewController
     }
 
     @discardableResult
@@ -602,7 +599,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
               transitionType: .pop,
               animated: animated)
 
-        _topViewController = to
         return from
     }
 
