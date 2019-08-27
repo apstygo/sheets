@@ -604,6 +604,30 @@ public class SheetController: UIViewController, ScrollableDelegate {
         return from
     }
 
+    @discardableResult
+    public func popToRootViewController(animated: Bool) -> [UIViewController]? {
+        return popToViewController(viewControllers[0], animated: animated)
+    }
+
+    @discardableResult
+    public func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        assert(viewControllers.contains(viewController),
+               "View controller must be inside SheetController's viewControllers array")
+        guard viewController != topViewController,
+            let vcIndex = viewControllers.firstIndex(of: viewController) else { return nil }
+
+        cycle(fromViewController: topViewController,
+              toViewController: viewController,
+              transitionType: .pop,
+              animated: animated)
+
+        let vcsToReturn = Array(viewControllers[(vcIndex + 1)...])
+        viewControllers = Array(viewControllers[...vcIndex])
+        return vcsToReturn
+    }
+
+    // MARK: - Misc
+
     private func addCloseButton(toViewController viewController: UIViewController,
                                 transitionType: TransitionType) {
         guard transitionType == .push else { return }
