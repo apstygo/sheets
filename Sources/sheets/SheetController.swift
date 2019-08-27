@@ -32,8 +32,6 @@ private enum Constant {
 
     static let defaultSpringDamping: CGFloat = 0.8
     static let originAnimationDuration: TimeInterval = 0.5
-    static let viewControllerPushAnimationDuration: TimeInterval = 0.5
-    static let viewControllerPopAnimationDuration: TimeInterval = 0.3
 
     static let tabBarAnimationDuration: TimeInterval = 0.25
 }
@@ -530,7 +528,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         let newVCStartFrame: CGRect
         let newVCEndFrame: CGRect
         let oldVCEndFrame: CGRect
-        let duration: TimeInterval
         let options: UIView.AnimationOptions
 
         switch transitionType {
@@ -538,17 +535,13 @@ public class SheetController: UIViewController, ScrollableDelegate {
             newVCStartFrame = outOfViewFrame
             newVCEndFrame = contentView.bounds
             oldVCEndFrame = contentView.bounds
-
-            duration = Constant.viewControllerPushAnimationDuration
             options = .curveEaseOut
 
         case .pop:
             newVCStartFrame = contentView.bounds
             newVCEndFrame = contentView.bounds
             oldVCEndFrame = outOfViewFrame
-
-            duration = Constant.viewControllerPopAnimationDuration
-            options = []
+            options = .curveEaseIn
         }
 
         newVC.view.frame = newVCStartFrame
@@ -561,6 +554,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
         addCloseButton(toViewController: newVC, transitionType: transitionType)
 
+        contentView.isUserInteractionEnabled = false
+
         let animations = {
             newVC.view.frame = newVCEndFrame
             oldVC.view.frame = oldVCEndFrame
@@ -569,20 +564,16 @@ public class SheetController: UIViewController, ScrollableDelegate {
         let completion = { (_: Bool) -> Void in
             oldVC.removeFromParent()
             newVC.didMove(toParent: self)
+            self.contentView.isUserInteractionEnabled = true
         }
 
-//        UIView.animate(withDuration: animated ? duration : 0,
-//                       delay: 0.0,
-//                       options: options,
-//                       animations: animations,
-//                       completion: completion)
-
-        transition(from: oldVC,
-                   to: newVC,
-                   duration: false ? duration : 0,
-                   options: options,
-                   animations: animations,
-                   completion: completion)
+        UIView.animate(withDuration: animated ? Constant.originAnimationDuration : 0,
+                       delay: 0,
+                       usingSpringWithDamping: 1,
+                       initialSpringVelocity: 0,
+                       options: options,
+                       animations: animations,
+                       completion: completion)
 
         bindAsScrollable(viewController: newVC)
     }
