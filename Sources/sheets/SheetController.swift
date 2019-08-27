@@ -59,14 +59,19 @@ public class SheetController: UIViewController, ScrollableDelegate {
         case pop
     }
 
-    // MARK: - Options
+    // MARK: - Public: Options
 
     public var expandGestureEnabled = true
     public var collapseGestureEnabled = true
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
-    // MARK: - State
+    // MARK: - Public: View Controllers
+
+    public private(set) var mainViewController: UIViewController
+    public private(set) var viewControllers: [UIViewController]
+
+    // MARK: - Private: State
 
     private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
@@ -76,10 +81,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private var tabBarIsHidden = false
     private weak var currentScrollable: Scrollable?
 
-    // MARK: - View Controllers
-
-    private var _mainViewController: UIViewController
-    private var _viewControllers: [UIViewController]
+    // MARK: - Private: Gesture Recognizers
 
     private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
     private lazy var contentTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleContentTap(_:)))
@@ -117,8 +119,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }()
 
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
-        _mainViewController = mainViewController
-        _viewControllers = [rootViewController]
+        mainViewController = mainViewController
+        viewControllers = [rootViewController]
 
         let bottomAnchorConstant: CGFloat
         if let navBar = (rootViewController as? UINavigationController)?.navigationBar {
@@ -270,7 +272,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private func adjustMainVCSafeAreaInsets() {
         let additionalBottomInset = availableFrame.maxY - anchorPoints.max()!
-        _mainViewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0,
+        mainViewController.additionalSafeAreaInsets = UIEdgeInsets(top: 0,
                                                                     left: 0,
                                                                     bottom: additionalBottomInset,
                                                                     right: 0)
@@ -440,15 +442,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     private func layoutMainController() {
-        addAsChild(_mainViewController) { mainView in
+        addAsChild(mainViewController) { mainView in
             mainView.frame = view.bounds
             view.insertSubview(mainView, belowSubview: dimmingEffectView)
         }
     }
 
     private func layoutRootController() {
-        let rootController = _viewControllers[0]
-        addAsChild(_viewControllers[0]) { rootView in
+        let rootController = viewControllers[0]
+        addAsChild(viewControllers[0]) { rootView in
             rootView.frame = contentView.bounds
             contentView.addSubview(rootView)
         }
@@ -577,7 +579,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     public var topViewController: UIViewController {
-        return _viewControllers.last!
+        return viewControllers.last!
     }
 
     public func pushViewController(_ viewController: UIViewController, animated: Bool) {
@@ -585,15 +587,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
               toViewController: viewController,
               transitionType: .push,
               animated: animated)
-        _viewControllers.append(viewController)
+        viewControllers.append(viewController)
     }
 
     @discardableResult
     public func popViewController(animated: Bool) -> UIViewController? {
-        guard _viewControllers.count > 1 else { return nil }
+        guard viewControllers.count > 1 else { return nil }
 
-        let from = _viewControllers.popLast()!
-        let to = _viewControllers.last!
+        let from = viewControllers.popLast()!
+        let to = viewControllers.last!
         cycle(fromViewController: from,
               toViewController: to,
               transitionType: .pop,
