@@ -6,7 +6,7 @@
 //  Copyright © 2019 Artyom Pstygo. All rights reserved.
 //
 
-import Foundation
+import CoreGraphics
 
 public enum Anchor {
     case ratio(Double)
