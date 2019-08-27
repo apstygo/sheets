@@ -6,7 +6,8 @@
 //  Copyright © 2019 Artyom Pstygo. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
+
 import UIKit
 
 public class SheetController: UIViewController, ScrollableDelegate {
@@ -671,3 +672,5 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
 }
+
+#endif

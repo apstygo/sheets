@@ -6,7 +6,8 @@
 //  Copyright © 2019 Artyom Pstygo. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
+
 import UIKit
 
 extension UIGestureRecognizer.State: CustomDebugStringConvertible {
@@ -29,3 +30,5 @@ extension UIGestureRecognizer.State: CustomDebugStringConvertible {
         }
     }
 }
+
+#endif

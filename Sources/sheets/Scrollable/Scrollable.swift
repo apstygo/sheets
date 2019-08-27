@@ -6,7 +6,8 @@
 //  Copyright © 2019 Artyom Pstygo. All rights reserved.
 //
 
-import Foundation
+#if os(iOS)
+
 import UIKit
 
 public protocol ScrollableDelegate: class {
@@ -20,3 +21,5 @@ public protocol ScrollableDelegate: class {
 public protocol Scrollable: class {
     var delegate: ScrollableDelegate? { get set }
 }
+
+#endif

@@ -6,6 +6,8 @@
 //  Created by Artyom Pstygo on 22.08.2019.
 //
 
+#if os(iOS)
+
 import UIKit
 
 open class ScrollableTableViewController: UITableViewController, Scrollable {
@@ -64,3 +66,5 @@ open class ScrollableCollectionViewController: UICollectionViewController, Scrol
     }
 
 }
+
+#endif
