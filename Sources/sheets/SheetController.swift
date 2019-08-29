@@ -19,7 +19,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         static let defaultPointsFromTopOffset: CGFloat = 20
 
         static let closeButtonSize: CGFloat = 30
-        static let closeButtonTopMargin: CGFloat = 7
+        static let closeButtonTopMargin: CGFloat = 10
         static let closeButtonRightMargin: CGFloat = 10
 
         static let shadowOffset = CGSize(width: 0, height: 16)
@@ -75,6 +75,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private var appearsFirstTime = true
     private var tabBarIsHidden = false
     private weak var currentScrollable: Scrollable?
+    private var closeButtons = [UIButton]()
+    private var modifiedNavigationItemControllers = [UIViewController]()
 
     // MARK: - Private: Gesture Recognizers
 
@@ -123,7 +125,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         } else {
             bottomAnchorConstant = 100
         }
-        self.anchorModels = anchors ?? [.pointsFromTop(Constant.defaultPointsFromTopOffset), .pointsFromBottom(bottomAnchorConstant)]
+        self.anchorModels = anchors ?? [.defaultExpanded, .pointsFromBottom(bottomAnchorConstant)]
 
         super.init(nibName: nil, bundle: nil)
 
@@ -467,6 +469,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
                 return availableFrame.minY + constant
             case let .ratio(ratio):
                 return availableFrame.minY + CGFloat(ratio) * availableFrame.height
+            case .defaultExpanded:
+                return availableFrame.minY + Constant.defaultPointsFromTopOffset
             }
         }
         .sorted()
@@ -516,7 +520,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private func cycle(fromViewController oldVC: UIViewController,
                        toViewController newVC: UIViewController,
                        transitionType: TransitionType,
-                       animated: Bool) {
+                       animated: Bool,
+                       addCloseButton: Bool) {
         oldVC.willMove(toParent: nil)
         addChild(newVC)
 
@@ -547,7 +552,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
             contentView.insertSubview(newVC.view, belowSubview: oldVC.view)
         }
 
-        addCloseButton(toViewController: newVC, transitionType: transitionType)
+        if addCloseButton {
+            self.addCloseButton(toViewController: newVC)
+        }
 
         contentView.isUserInteractionEnabled = false
 
@@ -581,7 +588,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
         cycle(fromViewController: topViewController,
               toViewController: viewController,
               transitionType: .push,
-              animated: animated)
+              animated: animated,
+              addCloseButton: true)
         viewControllers.append(viewController)
     }
 
@@ -594,7 +602,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
         cycle(fromViewController: from,
               toViewController: to,
               transitionType: .pop,
-              animated: animated)
+              animated: animated,
+              addCloseButton: false)
 
         return from
     }
@@ -614,19 +623,47 @@ public class SheetController: UIViewController, ScrollableDelegate {
         cycle(fromViewController: topViewController,
               toViewController: viewController,
               transitionType: .pop,
-              animated: animated)
+              animated: animated,
+              addCloseButton: false)
 
         let vcsToReturn = Array(viewControllers[(vcIndex + 1)...])
         viewControllers = Array(viewControllers[...vcIndex])
         return vcsToReturn
     }
 
+    public func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+        assert(!viewControllers.isEmpty, "SheetController can't display an empty array of controllers")
+
+        var transitionType: TransitionType?
+        switch self.viewControllers.firstIndex(of: viewControllers.last!) {
+        case nil:
+            transitionType = .push
+        case self.viewControllers.count - 1:
+            transitionType = nil
+        default:
+            transitionType = .pop
+        }
+
+        // remove all close buttons and properly re-add them
+        disposeOfCloseButtons()
+        if viewControllers.count > 1 {
+            viewControllers[1...].forEach { self.addCloseButton(toViewController: $0) }
+        }
+
+        if let transitionType = transitionType {
+            cycle(fromViewController: topViewController,
+                  toViewController: viewControllers.last!,
+                  transitionType: transitionType,
+                  animated: animated,
+                  addCloseButton: false)
+        }
+
+        self.viewControllers = viewControllers
+    }
+
     // MARK: - Misc
 
-    private func addCloseButton(toViewController viewController: UIViewController,
-                                transitionType: TransitionType) {
-        guard transitionType == .push else { return }
-
+    private func addCloseButton(toViewController viewController: UIViewController) {
         if let navigationController = viewController as? UINavigationController {
             let systemItem: UIBarButtonItem.SystemItem
             if #available(iOS 13, *) {
@@ -640,15 +677,17 @@ public class SheetController: UIViewController, ScrollableDelegate {
                                             action: #selector(closeBarButtonTap(_:)))
             navigationController.viewControllers[0].navigationItem.setRightBarButton(barButton, animated: true)
 
+            modifiedNavigationItemControllers.append(navigationController.viewControllers[0])
+
         } else {
             let button = UIButton()
             button.addTarget(self, action: #selector(closeButtonTap(_:)), for: .touchUpInside)
 
             var image = closeButtonImage
             if #available(iOS 13, *) {
-                button.imageView?.tintColor = .systemGray2
+                button.imageView?.tintColor = .systemGray3
                 button.imageView?.contentMode = .scaleAspectFit
-                let largeConfig = UIImage.SymbolConfiguration(textStyle: .largeTitle)
+                let largeConfig = UIImage.SymbolConfiguration(textStyle: .title2)
                 image = closeButtonImage ?? UIImage(systemName: "xmark.circle.fill", withConfiguration: largeConfig)
             }
             button.setImage(image, for: .normal)
@@ -659,7 +698,16 @@ public class SheetController: UIViewController, ScrollableDelegate {
                                   width: Constant.closeButtonSize,
                                   height: Constant.closeButtonSize)
             viewController.view.addSubview(button)
+
+            closeButtons.append(button)
         }
+    }
+
+    private func disposeOfCloseButtons() {
+        closeButtons.forEach { $0.removeFromSuperview() }
+        closeButtons.removeAll()
+        modifiedNavigationItemControllers.forEach { $0.navigationItem.rightBarButtonItem = nil }
+        modifiedNavigationItemControllers.removeAll()
     }
 
     @objc private func closeButtonTap(_ sender: UIButton) {
