@@ -9,12 +9,17 @@
 import CoreGraphics
 
 public enum Anchor {
+
+    // MARK: - Cases
+
     case ratio(Double)
     case pointsFromTop(CGFloat)
     case pointsFromBottom(CGFloat)
 
     case defaultExpanded
     case defaultCollapsed
+
+    // MARK: - Logic
 
     public func offset(inFrame frame: CGRect) -> CGFloat {
         switch self {
@@ -31,9 +36,9 @@ public enum Anchor {
         }
     }
 
-    private enum Constant {
-        static let defaultPointsFromTopOffset: CGFloat = 20
-        static let defaultPointsFromBottomOffset: CGFloat = 44
-    }
+}
 
+private enum Constant {
+    static let defaultPointsFromTopOffset: CGFloat = 20
+    static let defaultPointsFromBottomOffset: CGFloat = 44
 }
