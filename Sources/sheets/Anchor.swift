@@ -12,7 +12,7 @@ public enum Anchor {
 
     // MARK: - Cases
 
-    case ratio(Double)
+    case ratio(CGFloat)
     case pointsFromTop(CGFloat)
     case pointsFromBottom(CGFloat)
 
@@ -28,7 +28,7 @@ public enum Anchor {
         case let .pointsFromTop(constant):
             return frame.minY + constant
         case let .ratio(ratio):
-            return frame.minY + CGFloat(ratio) * frame.height
+            return frame.minY + ratio * frame.height
         case .defaultExpanded:
             return frame.minY + Constant.defaultPointsFromTopOffset
         case .defaultCollapsed:
