@@ -40,11 +40,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
-    // MARK: - Public: View Controllers
-
-    public private(set) var mainViewController: UIViewController
-    public private(set) var viewControllers: [UIViewController]
-
     // MARK: - Private: State
 
     private var anchorModels: [Anchor]
@@ -62,6 +57,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private lazy var panRecognizer = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
     private lazy var contentTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleContentTap(_:)))
     private lazy var dimmingViewTapRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleDimmingViewTap(_:)))
+
+    // MARK: - Private: Views
 
     private lazy var contentView: UIView = {
         let content = UIView()
@@ -94,6 +91,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
         return dimming
     }()
 
+    // MARK: - Initializers
+
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
         self.mainViewController = mainViewController
         self.viewControllers = [rootViewController]
@@ -104,6 +103,123 @@ public class SheetController: UIViewController, ScrollableDelegate {
         layoutMainController()
         layoutRootController()
     }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    // MARK: - Public: Anchors
+
+    public var anchors: [Anchor] {
+        return anchorModels
+    }
+
+    public func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
+        self.anchorModels = anchors
+        adjustMainVCSafeAreaInsets()
+        snapToAnchor(atIndex: index, animated: animated)
+    }
+
+    public func snapToAnchor(atIndex index: Int, animated: Bool) {
+        assert(index < anchorPoints.count, "Cannot snap to anchor, because index is out of bounds")
+        moveOrigin(to: anchorPoints[index], animated: animated)
+    }
+
+    public func expand(animated: Bool) {
+        snapToAnchor(atIndex: 0, animated: animated)
+    }
+
+    public func collapse(animated: Bool) {
+        snapToAnchor(atIndex: anchors.count - 1, animated: animated)
+    }
+
+    // MARK: - Public: View Controllers
+
+    public private(set) var mainViewController: UIViewController
+    public private(set) var viewControllers: [UIViewController]
+
+    public var topViewController: UIViewController {
+        return viewControllers.last!
+    }
+
+    public func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        cycle(fromViewController: topViewController,
+              toViewController: viewController,
+              transitionType: .push,
+              animated: animated,
+              addCloseButton: true)
+        viewControllers.append(viewController)
+    }
+
+    @discardableResult
+    public func popViewController(animated: Bool) -> UIViewController? {
+        guard viewControllers.count > 1 else { return nil }
+
+        let from = viewControllers.popLast()!
+        let to = viewControllers.last!
+        cycle(fromViewController: from,
+              toViewController: to,
+              transitionType: .pop,
+              animated: animated,
+              addCloseButton: false)
+
+        return from
+    }
+
+    @discardableResult
+    public func popToRootViewController(animated: Bool) -> [UIViewController]? {
+        return popToViewController(viewControllers[0], animated: animated)
+    }
+
+    @discardableResult
+    public func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
+        assert(viewControllers.contains(viewController),
+               "View controller must be inside SheetController's viewControllers array")
+        guard viewController != topViewController,
+            let vcIndex = viewControllers.firstIndex(of: viewController) else { return nil }
+
+        cycle(fromViewController: topViewController,
+              toViewController: viewController,
+              transitionType: .pop,
+              animated: animated,
+              addCloseButton: false)
+
+        let vcsToReturn = Array(viewControllers[(vcIndex + 1)...])
+        viewControllers = Array(viewControllers[...vcIndex])
+        return vcsToReturn
+    }
+
+    public func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+        assert(!viewControllers.isEmpty, "SheetController can't display an empty array of controllers")
+
+        var transitionType: TransitionType?
+        switch self.viewControllers.firstIndex(of: viewControllers.last!) {
+        case nil:
+            transitionType = .push
+        case self.viewControllers.count - 1:
+            transitionType = nil
+        default:
+            transitionType = .pop
+        }
+
+        // remove all close buttons and properly re-add them
+        disposeOfCloseButtons()
+        if viewControllers.count > 1 {
+            viewControllers[1...].forEach { self.addCloseButton(toViewController: $0) }
+        }
+
+        if let transitionType = transitionType {
+            cycle(fromViewController: topViewController,
+                  toViewController: viewControllers.last!,
+                  transitionType: transitionType,
+                  animated: animated,
+                  addCloseButton: false)
+        }
+
+        self.viewControllers = viewControllers
+    }
+
+    // MARK: - UIViewController Lifecycle
 
     public override func loadView() {
         view = UIView()
@@ -158,10 +274,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     // MARK: - Gestures
 
     @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
@@ -200,19 +312,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     // MARK: - Position Adjustment and Animation
-
-    public func snapToAnchor(atIndex index: Int, animated: Bool) {
-        assert(index < anchorPoints.count, "Cannot snap to anchor, because index is out of bounds")
-        moveOrigin(to: anchorPoints[index], animated: animated)
-    }
-
-    public func expand(animated: Bool) {
-        snapToAnchor(atIndex: 0, animated: animated)
-    }
-
-    public func collapse(animated: Bool) {
-        snapToAnchor(atIndex: anchors.count - 1, animated: animated)
-    }
 
     private var origin: CGFloat {
         get {
@@ -400,16 +499,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     // MARK: - Layout
 
-    public func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
-        self.anchorModels = anchors
-        adjustMainVCSafeAreaInsets()
-        snapToAnchor(atIndex: index, animated: animated)
-    }
-
-    public var anchors: [Anchor] {
-        return anchorModels
-    }
-
     private func layoutMainController() {
         addAsChild(mainViewController) { mainView in
             mainView.frame = view.bounds
@@ -538,87 +627,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
                        completion: completion)
 
         bindAsScrollable(viewController: newVC)
-    }
-
-    public var topViewController: UIViewController {
-        return viewControllers.last!
-    }
-
-    public func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        cycle(fromViewController: topViewController,
-              toViewController: viewController,
-              transitionType: .push,
-              animated: animated,
-              addCloseButton: true)
-        viewControllers.append(viewController)
-    }
-
-    @discardableResult
-    public func popViewController(animated: Bool) -> UIViewController? {
-        guard viewControllers.count > 1 else { return nil }
-
-        let from = viewControllers.popLast()!
-        let to = viewControllers.last!
-        cycle(fromViewController: from,
-              toViewController: to,
-              transitionType: .pop,
-              animated: animated,
-              addCloseButton: false)
-
-        return from
-    }
-
-    @discardableResult
-    public func popToRootViewController(animated: Bool) -> [UIViewController]? {
-        return popToViewController(viewControllers[0], animated: animated)
-    }
-
-    @discardableResult
-    public func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
-        assert(viewControllers.contains(viewController),
-               "View controller must be inside SheetController's viewControllers array")
-        guard viewController != topViewController,
-            let vcIndex = viewControllers.firstIndex(of: viewController) else { return nil }
-
-        cycle(fromViewController: topViewController,
-              toViewController: viewController,
-              transitionType: .pop,
-              animated: animated,
-              addCloseButton: false)
-
-        let vcsToReturn = Array(viewControllers[(vcIndex + 1)...])
-        viewControllers = Array(viewControllers[...vcIndex])
-        return vcsToReturn
-    }
-
-    public func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
-        assert(!viewControllers.isEmpty, "SheetController can't display an empty array of controllers")
-
-        var transitionType: TransitionType?
-        switch self.viewControllers.firstIndex(of: viewControllers.last!) {
-        case nil:
-            transitionType = .push
-        case self.viewControllers.count - 1:
-            transitionType = nil
-        default:
-            transitionType = .pop
-        }
-
-        // remove all close buttons and properly re-add them
-        disposeOfCloseButtons()
-        if viewControllers.count > 1 {
-            viewControllers[1...].forEach { self.addCloseButton(toViewController: $0) }
-        }
-
-        if let transitionType = transitionType {
-            cycle(fromViewController: topViewController,
-                  toViewController: viewControllers.last!,
-                  transitionType: transitionType,
-                  animated: animated,
-                  addCloseButton: false)
-        }
-
-        self.viewControllers = viewControllers
     }
 
     // MARK: - Misc
