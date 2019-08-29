@@ -695,7 +695,7 @@ private enum Constant {
     static let shadowColor = UIColor.black.cgColor
     static let shadowOpacity: Float = 0.5
 
-    static let defaultSpringDamping: CGFloat = 0.8
+    static let defaultSpringDamping: CGFloat = 0.85
     static let originAnimationDuration: TimeInterval = 0.5
 
     static let tabBarAnimationDuration: TimeInterval = 0.25
