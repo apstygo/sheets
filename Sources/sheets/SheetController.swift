@@ -42,7 +42,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     // MARK: - Private: State
 
-    private var anchorModels: [Anchor]
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
     private var isExpanded = false
@@ -96,7 +95,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
         self.mainViewController = mainViewController
         self.viewControllers = [rootViewController]
-        self.anchorModels = anchors ?? [.defaultExpanded, .defaultCollapsed]
+        self.anchors = anchors ?? [.defaultExpanded, .defaultCollapsed]
 
         super.init(nibName: nil, bundle: nil)
 
@@ -110,12 +109,10 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     // MARK: - Public: Anchors
 
-    public var anchors: [Anchor] {
-        return anchorModels
-    }
+    public private(set) var anchors: [Anchor]
 
     public func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
-        self.anchorModels = anchors
+        self.anchors = anchors
         adjustMainVCSafeAreaInsets()
         snapToAnchor(atIndex: index, animated: animated)
     }
@@ -522,7 +519,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     private var anchorPoints: [CGFloat] {
-        return anchorModels.map { $0.offset(inFrame: availableFrame) }.sorted()
+        return anchors.map { $0.offset(inFrame: availableFrame) }.sorted()
     }
 
     private var outOfViewFrame: CGRect {
