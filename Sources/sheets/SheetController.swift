@@ -16,8 +16,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         static let dimmingEffectViewMaxAlpha: CGFloat = 0.3
         static let primaryMargin: CGFloat = 20
         static let cornerRadius: CGFloat = 10
-        static let defaultPointsFromTopOffset: CGFloat = 20
-        static let defaultPointsFromBottomOffset: CGFloat = 44
 
         static let closeButtonSize: CGFloat = 30
         static let closeButtonTopMargin: CGFloat = 10
@@ -455,21 +453,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     private var anchorPoints: [CGFloat] {
-        return anchorModels.map { anchor in
-            switch anchor {
-            case let .pointsFromBottom(constant):
-                return availableFrame.maxY - constant
-            case let .pointsFromTop(constant):
-                return availableFrame.minY + constant
-            case let .ratio(ratio):
-                return availableFrame.minY + CGFloat(ratio) * availableFrame.height
-            case .defaultExpanded:
-                return availableFrame.minY + Constant.defaultPointsFromTopOffset
-            case .defaultCollapsed:
-                return availableFrame.maxY - Constant.defaultPointsFromBottomOffset
-            }
-        }
-        .sorted()
+        return anchorModels.map { $0.offset(inFrame: availableFrame) }.sorted()
     }
 
     private var outOfViewFrame: CGRect {
