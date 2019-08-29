@@ -64,11 +64,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         content.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         content.layer.cornerRadius = Constant.cornerRadius
         content.layer.masksToBounds = true
-        if #available(iOS 13, *) {
-            content.backgroundColor = .secondarySystemBackground
-        } else {
-            content.backgroundColor = .white
-        }
         return content
     }()
 
@@ -86,7 +81,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private lazy var dimmingEffectView: UIView = {
         let dimming = UIView()
         dimming.backgroundColor = .black
-        dimming.alpha = Constant.dimmingEffectViewMaxAlpha
+        dimming.alpha = 0
         return dimming
     }()
 
