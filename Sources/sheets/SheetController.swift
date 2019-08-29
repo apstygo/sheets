@@ -17,6 +17,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         static let primaryMargin: CGFloat = 20
         static let cornerRadius: CGFloat = 10
         static let defaultPointsFromTopOffset: CGFloat = 20
+        static let defaultPointsFromBottomOffset: CGFloat = 44
 
         static let closeButtonSize: CGFloat = 30
         static let closeButtonTopMargin: CGFloat = 10
@@ -117,15 +118,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     public init(mainViewController: UIViewController, rootViewController: UIViewController, anchors: [Anchor]? = nil) {
         self.mainViewController = mainViewController
-        viewControllers = [rootViewController]
-
-        let bottomAnchorConstant: CGFloat
-        if let navBar = (rootViewController as? UINavigationController)?.navigationBar {
-            bottomAnchorConstant = navBar.bounds.height
-        } else {
-            bottomAnchorConstant = 100
-        }
-        self.anchorModels = anchors ?? [.defaultExpanded, .pointsFromBottom(bottomAnchorConstant)]
+        self.viewControllers = [rootViewController]
+        self.anchorModels = anchors ?? [.defaultExpanded, .defaultCollapsed]
 
         super.init(nibName: nil, bundle: nil)
 
@@ -471,6 +465,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
                 return availableFrame.minY + CGFloat(ratio) * availableFrame.height
             case .defaultExpanded:
                 return availableFrame.minY + Constant.defaultPointsFromTopOffset
+            case .defaultCollapsed:
+                return availableFrame.maxY - Constant.defaultPointsFromBottomOffset
             }
         }
         .sorted()

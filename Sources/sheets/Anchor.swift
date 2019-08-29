@@ -12,5 +12,7 @@ public enum Anchor {
     case ratio(Double)
     case pointsFromTop(CGFloat)
     case pointsFromBottom(CGFloat)
+
     case defaultExpanded
+    case defaultCollapsed
 }
