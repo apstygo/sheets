@@ -12,26 +12,6 @@ import UIKit
 
 public class SheetController: UIViewController, ScrollableDelegate {
 
-    private enum Constant {
-        static let dimmingEffectViewMaxAlpha: CGFloat = 0.3
-        static let primaryMargin: CGFloat = 20
-        static let cornerRadius: CGFloat = 10
-
-        static let closeButtonSize: CGFloat = 30
-        static let closeButtonTopMargin: CGFloat = 10
-        static let closeButtonRightMargin: CGFloat = 10
-
-        static let shadowOffset = CGSize(width: 0, height: 16)
-        static let shadowRadius: CGFloat = 16
-        static let shadowColor = UIColor.black.cgColor
-        static let shadowOpacity: Float = 0.5
-
-        static let defaultSpringDamping: CGFloat = 0.8
-        static let originAnimationDuration: TimeInterval = 0.5
-
-        static let tabBarAnimationDuration: TimeInterval = 0.25
-    }
-
     private enum GestureState {
         case idle
         case dragging(initialOrigin: CGFloat)
@@ -699,6 +679,26 @@ public class SheetController: UIViewController, ScrollableDelegate {
         popViewController(animated: true)
     }
 
+}
+
+private enum Constant {
+    static let dimmingEffectViewMaxAlpha: CGFloat = 0.3
+    static let primaryMargin: CGFloat = 20
+    static let cornerRadius: CGFloat = 10
+
+    static let closeButtonSize: CGFloat = 30
+    static let closeButtonTopMargin: CGFloat = 10
+    static let closeButtonRightMargin: CGFloat = 10
+
+    static let shadowOffset = CGSize(width: 0, height: 16)
+    static let shadowRadius: CGFloat = 16
+    static let shadowColor = UIColor.black.cgColor
+    static let shadowOpacity: Float = 0.5
+
+    static let defaultSpringDamping: CGFloat = 0.8
+    static let originAnimationDuration: TimeInterval = 0.5
+
+    static let tabBarAnimationDuration: TimeInterval = 0.25
 }
 
 #endif
