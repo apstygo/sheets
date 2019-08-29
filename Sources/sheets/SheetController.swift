@@ -266,7 +266,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
-    // MARK: - Gestures
+    // MARK: - Gesture Handling
 
     @objc private func handlePan(_ sender: UIPanGestureRecognizer) {
         switch sender.state {
