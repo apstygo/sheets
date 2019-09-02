@@ -35,8 +35,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     // MARK: - Public: Options
 
-    public var expandGestureEnabled = true
-    public var collapseGestureEnabled = true
+    public var isExpandGestureEnabled = true
+    public var isCollapseGestureEnabled = true
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
@@ -290,14 +290,14 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     @objc private func handleContentTap(_ sender: UITapGestureRecognizer) {
-        if expandGestureEnabled, !isExpanded, sender.location(in: contentView).y < headerHeight {
+        if isExpandGestureEnabled, !isExpanded, sender.location(in: contentView).y < headerHeight {
             snapToAnchor(atIndex: 0, animated: true)
             isExpanded = true
         }
     }
 
     @objc private func handleDimmingViewTap(_ sender: UITapGestureRecognizer) {
-        if collapseGestureEnabled, isExpanded {
+        if isCollapseGestureEnabled, isExpanded {
             snapToAnchor(atIndex: 1, animated: true)
             isExpanded = false
         }
