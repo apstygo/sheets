@@ -22,9 +22,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
         case dragging(lastContentOffset: CGPoint)
     }
 
-    private enum SnappingLocation {
-        case `default`
+    private enum Location {
         case top
+        case middle
         case bottom
     }
 
@@ -37,6 +37,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     public var isExpandGestureEnabled = true
     public var isCollapseGestureEnabled = true
+    public var cancelsTouchesInCollapsedState = true {
+        didSet { updateContentTapCancelsTouches() }
+    }
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
 
@@ -44,7 +47,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
-    private var isExpanded = false
+    private var currentLocation: Location = .bottom {
+        didSet { updateContentTapCancelsTouches() }
+    }
     private var appearsFirstTime = true
     private var tabBarIsHidden = false
     private weak var currentScrollable: Scrollable?
@@ -235,7 +240,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         // Gesture recognizer bindings
 
         contentView.addGestureRecognizer(panRecognizer)
-        contentTapRecognizer.cancelsTouchesInView = false
         contentView.addGestureRecognizer(contentTapRecognizer)
 
         dimmingViewTapRecognizer.cancelsTouchesInView = false
@@ -290,17 +294,21 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     @objc private func handleContentTap(_ sender: UITapGestureRecognizer) {
-        if isExpandGestureEnabled, !isExpanded, sender.location(in: contentView).y < headerHeight {
-            snapToAnchor(atIndex: 0, animated: true)
-            isExpanded = true
+        if isExpandGestureEnabled,
+           currentLocation == .bottom,
+           sender.location(in: contentView).y < headerHeight || cancelsTouchesInCollapsedState {
+            expand(animated: true)
         }
     }
 
     @objc private func handleDimmingViewTap(_ sender: UITapGestureRecognizer) {
-        if isCollapseGestureEnabled, isExpanded {
-            snapToAnchor(atIndex: 1, animated: true)
-            isExpanded = false
+        if isCollapseGestureEnabled, currentLocation == .top {
+            collapse(animated: true)
         }
+    }
+
+    private func updateContentTapCancelsTouches() {
+        contentTapRecognizer.cancelsTouchesInView = currentLocation == .bottom && cancelsTouchesInCollapsedState
     }
 
     // MARK: - Position Adjustment and Animation
@@ -342,8 +350,20 @@ public class SheetController: UIViewController, ScrollableDelegate {
                             animated: Bool,
                             velocity: CGFloat = 0,
                             completion: ((Bool) -> Void)? = nil) {
-        isExpanded = newOriginY == anchorPoints[0]
+        // update state
+        switch newOriginY {
+        case anchorPoints.first!:
+            currentLocation = .top
+        case anchorPoints.last!:
+            currentLocation = .bottom
+        default:
+            currentLocation = .middle
+        }
 
+        // hide tab bar in parallel
+        setTabBarHidden(currentLocation == .top, animated: animated)
+
+        // animate movement
         let animations = {
             self.origin = newOriginY
         }
@@ -355,8 +375,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
                        options: [.allowUserInteraction, .beginFromCurrentState, .curveEaseOut],
                        animations: animations,
                        completion: completion)
-
-        setTabBarHidden(isExpanded, animated: animated)
     }
 
     private func moveOriginToTheNearestAnchor(withVelocity velocity: CGFloat,
