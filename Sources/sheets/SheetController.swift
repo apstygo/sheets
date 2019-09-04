@@ -38,7 +38,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public var isExpandGestureEnabled = true
     public var isCollapseGestureEnabled = true
     public var cancelsTouchesInCollapsedState = true {
-        didSet { updateContentTapCancelsTouches() }
+        didSet { updateContentViewInteraction() }
     }
     public var hidesTabBarUponExpansion = true
     public var closeButtonImage: UIImage?
@@ -48,7 +48,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private var gestureState: GestureState = .idle
     private var contentState: ContentState = .idle
     private var currentLocation: Location = .bottom {
-        didSet { updateContentTapCancelsTouches() }
+        didSet { updateContentViewInteraction() }
     }
     private var appearsFirstTime = true
     private var tabBarIsHidden = false
@@ -239,11 +239,15 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
         // Gesture recognizer bindings
 
-        contentView.addGestureRecognizer(panRecognizer)
-        contentView.addGestureRecognizer(contentTapRecognizer)
+        wrapperView.addGestureRecognizer(panRecognizer)
+        wrapperView.addGestureRecognizer(contentTapRecognizer)
+        dimmingEffectView.addGestureRecognizer(dimmingViewTapRecognizer)
+
+        // Initial state
 
         dimmingViewTapRecognizer.cancelsTouchesInView = false
-        dimmingEffectView.addGestureRecognizer(dimmingViewTapRecognizer)
+        contentTapRecognizer.cancelsTouchesInView = false
+        contentView.isUserInteractionEnabled = false
 
         // TabBar hiding fix
 
@@ -307,8 +311,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
-    private func updateContentTapCancelsTouches() {
-        contentTapRecognizer.cancelsTouchesInView = currentLocation == .bottom && cancelsTouchesInCollapsedState
+    private func updateContentViewInteraction() {
+        contentView.isUserInteractionEnabled = !(currentLocation == .bottom && cancelsTouchesInCollapsedState)
     }
 
     // MARK: - Position Adjustment and Animation
