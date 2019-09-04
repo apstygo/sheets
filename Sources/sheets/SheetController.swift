@@ -41,6 +41,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         didSet { updateContentViewInteraction() }
     }
     public var hidesTabBarUponExpansion = true
+    public var bounces = true
     public var closeButtonImage: UIImage?
 
     // MARK: - Private: State
@@ -375,7 +376,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
         UIView.animate(withDuration: animated ? Constant.originAnimationDuration : 0,
                        delay: 0,
-                       usingSpringWithDamping: Constant.defaultSpringDamping,
+                       usingSpringWithDamping: bounces ? Constant.defaultSpringDamping : 1,
                        initialSpringVelocity: velocity,
                        options: [.allowUserInteraction, .beginFromCurrentState, .curveEaseOut],
                        animations: animations,
@@ -402,6 +403,8 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
 
     private func trimTargetHeaderOrigin(_ target: CGFloat) -> CGFloat {
+        guard bounces else { return trimTargetScrollableOrigin(target) }
+
         if target < anchorPoints.min()! {
             return anchorPoints.min()! - sqrt(anchorPoints.min()! - target)
         } else if target > anchorPoints.max()! {
