@@ -114,6 +114,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public func setAnchors(_ anchors: [Anchor], animated: Bool, snapTo index: Int = 0) {
         self.anchors = anchors
         adjustMainVCSafeAreaInsets()
+        adjustContainerSize(targetOrigin: anchorPoints[0])
         snapToAnchor(atIndex: index, animated: animated)
     }
 
