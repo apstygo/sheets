@@ -42,6 +42,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     }
     public var hidesTabBarUponExpansion = true
     public var bounces = true
+    public var animatesCorners = false
     public var closeButtonImage: UIImage?
 
     // MARK: - Private: State
@@ -325,7 +326,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
         set {
             setContainerOrigin(newValue)
-            adjustDimmingEffectViewAlpha(targetOrigin: newValue)
+            adjustViews(forTargetOrigin: newValue)
         }
     }
 
@@ -335,13 +336,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private func adjustContainerSize(targetOrigin: CGFloat) {
         wrapperView.frame.size = CGSize(width: view.bounds.width, height: view.bounds.height - targetOrigin)
-    }
-
-    private func adjustDimmingEffectViewAlpha(targetOrigin: CGFloat) {
-        let topAnchor = anchorPoints[0]
-        let nextAnchor = anchorPoints[1]
-        let ratio = 1 - (origin - topAnchor) / (nextAnchor - topAnchor)
-        dimmingEffectView.alpha = Constant.dimmingEffectViewMaxAlpha * ratio
     }
 
     private func adjustMainVCSafeAreaInsets() {
@@ -436,6 +430,31 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
 
         return anchor
+    }
+
+    // MARK: - Animatable State
+
+    private func adjustViews(forTargetOrigin targetOrigin: CGFloat) {
+        let ratio = computeRatio(forTargetOrigin: targetOrigin)
+        adjustDimmingEffectViewAlpha(ratio: ratio)
+        if animatesCorners {
+            adjustCornerRadius(ratio: ratio)
+        }
+    }
+
+    private func computeRatio(forTargetOrigin targetOrigin: CGFloat) -> CGFloat {
+        let topAnchor = anchorPoints[0]
+        let nextAnchor = anchorPoints[1]
+        return 1 - (origin - topAnchor) / (nextAnchor - topAnchor)
+    }
+
+    private func adjustDimmingEffectViewAlpha(ratio: CGFloat) {
+        dimmingEffectView.alpha = Constant.dimmingEffectViewMaxAlpha * ratio
+    }
+
+    private func adjustCornerRadius(ratio: CGFloat) {
+        contentView.layer.cornerRadius = Constant.cornerRadius * ratio
+        wrapperView.layer.cornerRadius = Constant.cornerRadius * ratio
     }
 
     private func setTabBarHidden(_ hide: Bool, animated: Bool) {
