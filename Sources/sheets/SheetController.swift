@@ -37,7 +37,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     public var isExpandGestureEnabled = true
     public var isCollapseGestureEnabled = true
-    public var cancelsTouchesInCollapsedState = true {
+    public var cancelsTouchesInCollapsedState = false {
         didSet { updateContentViewInteraction() }
     }
     public var hidesTabBarUponExpansion = true
@@ -250,7 +250,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
         dimmingViewTapRecognizer.cancelsTouchesInView = false
         contentTapRecognizer.cancelsTouchesInView = false
-        contentView.isUserInteractionEnabled = false
+        contentView.isUserInteractionEnabled = !cancelsTouchesInCollapsedState
 
         // TabBar hiding fix
 
