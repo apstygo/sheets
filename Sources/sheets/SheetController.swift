@@ -255,7 +255,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
         // TabBar hiding fix
 
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(handleAppWillEnterForeground),
+                                               selector: #selector(fixTabBarPositioning),
                                                name: UIApplication.willEnterForegroundNotification,
                                                object: nil)
     }
@@ -270,10 +270,10 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
-    @objc private func handleAppWillEnterForeground() {
+    @objc private func fixTabBarPositioning() {
         if tabBarIsHidden, let tabBarController = tabBarController {
             let tabBar = tabBarController.tabBar
-            tabBar.frame.origin.y += tabBar.frame.size.height
+            tabBar.frame.origin = CGPoint(x: 0, y: view.bounds.height)
         }
     }
 
@@ -462,15 +462,14 @@ public class SheetController: UIViewController, ScrollableDelegate {
             let tabBarController = tabBarController,
             hide != tabBarIsHidden else { return }
 
-        let currentFrame = tabBarController.tabBar.frame
-        var newFrame = currentFrame
+        var newFrame = tabBarController.tabBar.frame
         var options: UIView.AnimationOptions = [.beginFromCurrentState]
 
         if hide {
-            newFrame.origin.y += newFrame.size.height
+            newFrame.origin = CGPoint(x: 0, y: view.bounds.height)
             options.formUnion(.curveEaseIn)
         } else {
-            newFrame.origin.y -= newFrame.size.height
+            newFrame.origin = CGPoint(x: 0, y: view.bounds.height - newFrame.height)
             options.formUnion(.curveEaseOut)
         }
 
