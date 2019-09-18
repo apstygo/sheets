@@ -462,26 +462,44 @@ public class SheetController: UIViewController, ScrollableDelegate {
             let tabBarController = tabBarController,
             hide != tabBarIsHidden else { return }
 
-        var newFrame = tabBarController.tabBar.frame
+        let tabBarSize = tabBarController.tabBar.frame.size
+        let hiddenFrame = CGRect(origin: CGPoint(x: 0, y: view.bounds.height), size: tabBarSize)
+        let visibleFrame = CGRect(origin: CGPoint(x: 0, y: view.bounds.height - tabBarSize.height), size: tabBarSize)
+
+        // Pre-animation
+
+        if !hide {
+            tabBarController.tabBar.alpha = 1
+        }
+        tabBarController.tabBar.frame = tabBarIsHidden ? hiddenFrame : visibleFrame
+
+        // In-animation
+
         var options: UIView.AnimationOptions = [.beginFromCurrentState]
 
         if hide {
-            newFrame.origin = CGPoint(x: 0, y: view.bounds.height)
             options.formUnion(.curveEaseIn)
         } else {
-            newFrame.origin = CGPoint(x: 0, y: view.bounds.height - newFrame.height)
             options.formUnion(.curveEaseOut)
         }
 
         let animations = {
-            tabBarController.tabBar.frame = newFrame
+            tabBarController.tabBar.frame = hide ? hiddenFrame : visibleFrame
+        }
+
+        // Post-animation
+
+        let completion = { (_: Bool) in
+            if hide {
+                tabBarController.tabBar.alpha = 0
+            }
         }
 
         UIView.animate(withDuration: animated ? Constant.tabBarAnimationDuration : 0,
                        delay: 0,
                        options: options,
                        animations: animations,
-                       completion: nil)
+                       completion: completion)
 
         tabBarIsHidden = hide
     }
