@@ -251,13 +251,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
         dimmingViewTapRecognizer.cancelsTouchesInView = false
         contentTapRecognizer.cancelsTouchesInView = false
         contentView.isUserInteractionEnabled = !cancelsTouchesInCollapsedState
-
-        // TabBar hiding fix
-
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(fixTabBarPositioning),
-                                               name: UIApplication.willEnterForegroundNotification,
-                                               object: nil)
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -267,13 +260,6 @@ public class SheetController: UIViewController, ScrollableDelegate {
             origin = anchorPoints.max()!
             adjustContainerSize(targetOrigin: anchorPoints.min()!)
             adjustMainVCSafeAreaInsets()
-        }
-    }
-
-    @objc private func fixTabBarPositioning() {
-        if tabBarIsHidden, let tabBarController = tabBarController {
-            let tabBar = tabBarController.tabBar
-            tabBar.frame.origin = CGPoint(x: 0, y: view.bounds.height)
         }
     }
 
