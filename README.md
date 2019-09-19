@@ -75,6 +75,10 @@ Anchors can be set during initialization or via `setAnchors(_:animated:snapTo:)`
 * The default anchors for each `SheetController` are `defaultExpanded` and `defaultCollapsed`.
 * The exact constants for `defaultExpanded` and `defaultCollapsed` anchors are 20 points from top and 44 points from bottom respectively. The former constant replicates the expanded state of sheet-like UI in Apple's Shortcuts app. The latter constant is nice for a number of reasons: it's just enough to let the user drag on it, and when a navigation controller is presented inside thу sheet, navigation bar just barely touches the bottom in collapsed state. 
 
+## Examples
+
+You can find sample use cases in this [example app](https://github.com/apstygo/sheets-example).
+
 ## References
 
 This library was inspired by these articles from the Yandex.Maps iOS team: 
