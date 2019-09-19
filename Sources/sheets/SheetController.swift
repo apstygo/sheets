@@ -665,6 +665,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
         let completion = { (_: Bool) -> Void in
             oldVC.removeFromParent()
+            oldVC.view.removeFromSuperview()
             newVC.didMove(toParent: self)
             self.contentView.isUserInteractionEnabled = true
         }
