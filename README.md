@@ -1,3 +1,7 @@
+<p align="center">
+  <img height="500" src="Assets/demo.gif"/>
+</p>
+
 # sheets
 
 You always wanted to have that card-like controller similar to that in Maps or Shortcuts, didn't you? Well, now you can have it for free with sheets! sheets provides an easy to use container controller, that has API similar to that of UINavigationController. 
@@ -6,17 +10,33 @@ You always wanted to have that card-like controller similar to that in Maps or S
 
 ### Swift Package Manager
 
-_Requires XCode 11_. In project menu under Swift Packages add sheets via URL. 
+**Requires XCode 11**. In project menu under Swift Packages add sheets via URL. 
 
 ### Cocoapods
 
-Add `pod sheets` to your Podfile.
+In your Podfile add
+
+```ruby
+pod sheets
+```
 
 ## Usage
 
 The idea behind sheets is simple. sheets provides `SheetController` container view controller. It contains one _main view controller_ and one or more _view controllers_, presented inside the sheet. Main view controller is what is behind the sheet. This controller cannot be changed after initialization (at least for now). View controllers inside the sheet are dynamic, meaning they can be pushed and popped as needed, though there always has to be at least one VC in the stack (having no view controllers inside the card doesn't really make that much sense).
 
 To start using sheets in your project, initialize `SheetController` via `init(mainViewController:rootViewController:anchors:)` initializer, then present it as you would any other view controller.
+
+## Scrolling behavior
+
+To enable the user to drag the sheet by its content, `SheetController` has to become a delegate of `UIScrollView`. Unfortunately, it is straight up impossible to set the `delegate` property of some scroll views (e.g. `UITableView` has to be its own delegate). Furthermore, various users of scroll views' API may want to intercept scrolling callbacks themselves. 
+
+To alleviate this problem `sheets` introduces `Scrollable` and `ScrollableDelegate` protocols. If you want your custom views to be properly scrollable when presented as a part of `SheetController` you'll have to route scrolling events to the `delegate` object.
+
+Steps:
+1. Conform your view/view controller to `Scrollable` protocol.
+2. Call `scrollableWillBeginDragging(_)`, `scrollableDidScroll(_)` and `scrollableWillEndDragging(_:withVelocity:targetContentOffset:)` methods inside `scrollViewWillBeginDragging(_:)`, `scrollViewDidScroll(_:)` and `scrollViewWillEndDragging(_:withVelocity:targetContentOffset:)` respectively. 
+
+For those who do not need to override `UIScrollView` methods listed above `sheets` provides two convenience view controllers: `ScrollableTableViewController` and `ScrollableCollectionViewController`. Those VCs are `Scrollable` from the get-go!
 
 ## Customization
 
@@ -54,3 +74,13 @@ Anchors can be set during initialization or via `setAnchors(_:animated:snapTo:)`
 * You don't have to order anchors in any particular way.
 * The default anchors for each `SheetController` are `defaultExpanded` and `defaultCollapsed`.
 * The exact constants for `defaultExpanded` and `defaultCollapsed` anchors are 20 points from top and 44 points from bottom respectively. The former constant replicates the expanded state of sheet-like UI in Apple's Shortcuts app. The latter constant is nice for a number of reasons: it's just enough to let the user drag on it, and when a navigation controller is presented inside thу sheet, navigation bar just barely touches the bottom in collapsed state. 
+
+## References
+
+This library was inspired by these articles from the Yandex.Maps iOS team: 
+1. [Custom paging in iOS](https://medium.com/yandex-maps-ios/custom-paging-в-ios-c4dd4611e589)
+2. [Drawable card UI](https://medium.com/yandex-maps-ios/вытягивающаяся-карточка-bc2dac091e72)
+
+## Licensing
+
+This library is distributed under the MIT license.
