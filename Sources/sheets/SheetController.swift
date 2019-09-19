@@ -43,6 +43,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
     public var hidesTabBarUponExpansion = true
     public var bounces = true
     public var animatesCorners = false
+    public var hasChevron = false {
+        didSet { setChevronEnabled(hasChevron) }
+    }
     public var closeButtonImage: UIImage?
 
     // MARK: - Private: State
@@ -57,6 +60,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
     private weak var currentScrollable: Scrollable?
     private var closeButtons = [UIButton]()
     private var modifiedNavigationItemControllers = [UIViewController]()
+    private weak var chevron: UIView?
 
     // MARK: - Private: Gesture Recognizers
 
@@ -576,6 +580,13 @@ public class SheetController: UIViewController, ScrollableDelegate {
         return 0
     }
 
+    private func setTopInsetEnabled(_ enabled: Bool, forViewController viewController: UIViewController) {
+        guard !(viewController is UINavigationController) else { return }
+        let topInset: CGFloat = enabled ? Constant.chevronModuleHeight : 0
+        let safeAreaInsets = UIEdgeInsets(top: topInset, left: 0, bottom: 0, right: 0)
+        viewController.additionalSafeAreaInsets = safeAreaInsets
+    }
+
     // MARK: - Child-parent relationship
 
     private func addAsChild(_ childController: UIViewController, layoutClosure: (UIView) -> Void) {
@@ -667,6 +678,9 @@ public class SheetController: UIViewController, ScrollableDelegate {
                        completion: completion)
 
         bindAsScrollable(viewController: newVC)
+        if hasChevron {
+            setTopInsetEnabled(true, forViewController: newVC)
+        }
     }
 
     // MARK: - Misc
@@ -711,6 +725,29 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
     }
 
+    private func setChevronEnabled(_ enabled: Bool) {
+        if enabled && chevron == nil {
+            let chevron = UIView()
+            self.chevron = chevron
+            chevron.backgroundColor = Constant.chevronColor
+            chevron.layer.cornerRadius = 2
+
+            chevron.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(chevron)
+            NSLayoutConstraint.activate([
+                chevron.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+                chevron.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constant.chevronMargin),
+                chevron.widthAnchor.constraint(equalToConstant: Constant.chevronWidth),
+                chevron.heightAnchor.constraint(equalToConstant: Constant.chevronHeight)
+            ])
+
+        } else if !enabled {
+            chevron?.removeFromSuperview()
+        }
+
+        setTopInsetEnabled(enabled, forViewController: topViewController)
+    }
+
     private func disposeOfCloseButtons() {
         closeButtons.forEach { $0.removeFromSuperview() }
         closeButtons.removeAll()
@@ -747,6 +784,19 @@ private enum Constant {
     static let originAnimationDuration: TimeInterval = 0.5
 
     static let tabBarAnimationDuration: TimeInterval = 0.25
+
+    static let chevronHeight: CGFloat = 4
+    static let chevronWidth: CGFloat = 30
+    static let chevronMargin: CGFloat = 5
+    static var chevronCornerRadius: CGFloat { return chevronHeight / 2 }
+    static var chevronModuleHeight: CGFloat { return chevronHeight + chevronMargin * CGFloat(2) }
+    static let chevronColor: UIColor = {
+        if #available(iOS 13.0, *) {
+            return UIColor.label.withAlphaComponent(0.2)
+        } else {
+            return UIColor.black.withAlphaComponent(0.2)
+        }
+    }()
 }
 
 #endif
