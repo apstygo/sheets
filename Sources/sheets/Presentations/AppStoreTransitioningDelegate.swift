@@ -1,5 +1,5 @@
 //
-//  CustomTransitioningDelegate.swift
+//  AppStoreTransitioningDelegate.swift
 //  sheets
 //
 //  Created by Artyom Pstygo on 22.09.2019.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class CustomTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
+public class AppStoreTransitioningDelegate: NSObject, UIViewControllerTransitioningDelegate {
 
     private var interactionController: SwipeInteractionController?
 
