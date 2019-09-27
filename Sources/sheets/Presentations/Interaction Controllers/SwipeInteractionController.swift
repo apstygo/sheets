@@ -40,13 +40,11 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
 
             if progress >= 0.5 {
                 gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
-//                completionSpeed = 1
                 finish()
             }
 
         case .cancelled, .ended:
             interactionInProgress = false
-//            completionSpeed = 3
             cancel()
 
         default:
