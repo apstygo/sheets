@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
+class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestureRecognizerDelegate {
 
     private(set) var interactionInProgress = false
 
@@ -16,16 +16,21 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
     init(viewController: UIViewController) {
         super.init()
         self.viewController = viewController
-        prepareGestureRecognizer(in: viewController.view)
+        prepareGestureRecognizers(in: viewController.view)
     }
 
-    private func prepareGestureRecognizer(in view: UIView) {
-        let gesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleGesture(_:)))
-        gesture.edges = .left
-        view.addGestureRecognizer(gesture)
+    private func prepareGestureRecognizers(in view: UIView) {
+        let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
+        edgePan.edges = .left
+        edgePan.delegate = self
+        view.addGestureRecognizer(edgePan)
+
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        pan.delegate = self
+        view.addGestureRecognizer(pan)
     }
 
-    @objc func handleGesture(_ gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
+    @objc private func handleEdgePan(_ gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
         switch gestureRecognizer.state {
         case .began:
             gestureRecognizer.setTranslation(.zero, in: gestureRecognizer.view!.superview!)
@@ -34,7 +39,7 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
 
         case .changed:
             let translation = gestureRecognizer.translation(in: gestureRecognizer.view!.superview!)
-            let progress = Self.progress(forTranslation: translation.x)
+            let progress = Self.progress(forTranslation: translation.x, threshold: 100)
 
             update(progress)
 
@@ -52,10 +57,39 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
         }
     }
 
-    private static func progress(forTranslation translation: CGFloat) -> CGFloat {
-        let threshold: CGFloat = 100
+    @objc private func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+        let translation = gestureRecognizer.translation(in: gestureRecognizer.view!.superview!)
+        let progress = Self.progress(forTranslation: translation.y, threshold: 200)
 
-        if translation < threshold {
+        switch gestureRecognizer.state {
+        case .began:
+//            gestureRecognizer.setTranslation(.zero, in: gestureRecognizer.view!.superview!)
+            if progress > 0 {
+                interactionInProgress = true
+                viewController.dismiss(animated: true, completion: nil)
+            }
+
+        case .changed:
+            update(progress)
+
+            if progress >= 0.5 {
+                gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
+                finish()
+            }
+
+        case .cancelled, .ended:
+            interactionInProgress = false
+            cancel()
+
+        default:
+            break
+        }
+    }
+
+    private static func progress(forTranslation translation: CGFloat, threshold: CGFloat) -> CGFloat {
+        if translation < 0 {
+            return 0
+        } else if translation < threshold {
             return sin((translation / threshold) * (CGFloat.pi / 2)) / 2
         } else {
             return 0.5
@@ -65,6 +99,13 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition {
     override var completionCurve: UIView.AnimationCurve {
         get { return .linear }
         set {  }
+    }
+
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer is UIScreenEdgePanGestureRecognizer, otherGestureRecognizer is UIPanGestureRecognizer {
+            return true
+        }
+        return false
     }
 
 }
