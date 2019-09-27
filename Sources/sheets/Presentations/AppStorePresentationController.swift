@@ -1,5 +1,5 @@
 //
-//  PresentationController.swift
+//  AppStorePresentationController.swift
 //  sheets
 //
 //  Created by Artyom Pstygo on 22.09.2019.
@@ -9,9 +9,9 @@
 import Foundation
 import UIKit
 
-class PresentationController: UIPresentationController {
+class AppStorePresentationController: UIPresentationController {
 
-    private var closeButton = PresentationController.createButton()
+    private var closeButton = AppStorePresentationController.createButton()
     private var blurView = UIVisualEffectView.createBlurView()
 
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {

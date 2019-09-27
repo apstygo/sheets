@@ -18,7 +18,7 @@ public class AppStoreTransitioningDelegate: NSObject, UIViewControllerTransition
 
     public func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         interactionController = SwipeInteractionController(viewController: presented)
-        return PresentationController(presentedViewController: presented, presenting: presenting)
+        return AppStorePresentationController(presentedViewController: presented, presenting: presenting)
     }
 
     public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
