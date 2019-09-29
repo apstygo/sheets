@@ -21,13 +21,17 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
 
     private func prepareGestureRecognizers(in view: UIView) {
         let edgePan = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
+        edgePan.cancelsTouchesInView = false
         edgePan.edges = .left
         edgePan.delegate = self
         view.addGestureRecognizer(edgePan)
 
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
-        pan.delegate = self
-        view.addGestureRecognizer(pan)
+        if !(view is UIScrollView) {
+            let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            pan.cancelsTouchesInView = false
+            pan.delegate = self
+            view.addGestureRecognizer(pan)
+        }
     }
 
     @objc private func handleEdgePan(_ gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
