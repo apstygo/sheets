@@ -10,12 +10,12 @@
 
 import UIKit
 
-public protocol ScrollableDelegate: class {
-    func scrollableDidScroll(_ scrollView: UIScrollView)
-    func scrollableWillBeginDragging(_ scrollView: UIScrollView)
-    func scrollableWillEndDragging(_ scrollView: UIScrollView,
-                                   withVelocity velocity: CGPoint,
-                                   targetContentOffset: UnsafeMutablePointer<CGPoint>)
+@objc public protocol ScrollableDelegate: class {
+    @objc optional func scrollableDidScroll(_ scrollView: UIScrollView)
+    @objc optional func scrollableWillBeginDragging(_ scrollView: UIScrollView)
+    @objc optional func scrollableWillEndDragging(_ scrollView: UIScrollView,
+                                                  withVelocity velocity: CGPoint,
+                                                  targetContentOffset: UnsafeMutablePointer<CGPoint>)
 }
 
 public protocol Scrollable: class {

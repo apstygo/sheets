@@ -18,19 +18,19 @@ open class ScrollableTableViewController: UITableViewController, Scrollable {
     // MARK: - UIScrollViewDelegate
 
     open override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        delegate?.scrollableWillBeginDragging(scrollView)
+        delegate?.scrollableWillBeginDragging?(scrollView)
     }
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.scrollableDidScroll(scrollView)
+        delegate?.scrollableDidScroll?(scrollView)
     }
 
     open override func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                                  withVelocity velocity: CGPoint,
                                                  targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        delegate?.scrollableWillEndDragging(scrollView,
-                                            withVelocity: velocity,
-                                            targetContentOffset: targetContentOffset)
+        delegate?.scrollableWillEndDragging?(scrollView,
+                                             withVelocity: velocity,
+                                             targetContentOffset: targetContentOffset)
     }
 
     // MARK: - UITableViewDelegate
@@ -50,19 +50,19 @@ open class ScrollableCollectionViewController: UICollectionViewController, Scrol
     // MARK: - UIScrollViewDelegate
 
     open override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        delegate?.scrollableWillBeginDragging(scrollView)
+        delegate?.scrollableWillBeginDragging?(scrollView)
     }
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.scrollableDidScroll(scrollView)
+        delegate?.scrollableDidScroll?(scrollView)
     }
 
     open override func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                                  withVelocity velocity: CGPoint,
                                                  targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        delegate?.scrollableWillEndDragging(scrollView,
-                                            withVelocity: velocity,
-                                            targetContentOffset: targetContentOffset)
+        delegate?.scrollableWillEndDragging?(scrollView,
+                                             withVelocity: velocity,
+                                             targetContentOffset: targetContentOffset)
     }
 
 }
