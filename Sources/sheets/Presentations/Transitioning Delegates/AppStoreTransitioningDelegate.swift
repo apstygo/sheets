@@ -24,7 +24,7 @@ public class AppStoreTransitioningDelegate: NSObject, UIViewControllerTransition
     public func interactionControllerForDismissal(using animator: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
         guard animator is ShrinkDismissAnimationController,
               let interactionController = interactionController,
-              interactionController.interactionInProgress else { return nil }
+              case .interacting = interactionController.interactionStatus else { return nil }
 
         return interactionController
     }

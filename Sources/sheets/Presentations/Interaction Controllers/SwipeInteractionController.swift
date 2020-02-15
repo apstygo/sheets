@@ -9,9 +9,15 @@ import UIKit
 
 class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestureRecognizerDelegate {
 
-    private(set) var interactionInProgress = false
+    enum InteractionStatus {
+        case notInteracting
+        case interacting(lastTranslation: CGFloat)
+    }
+
+    private(set) var interactionStatus: InteractionStatus = .notInteracting
 
     private weak var viewController: UIViewController!
+    private var gestureRecognizers = [UIGestureRecognizer]()
 
     init(viewController: UIViewController) {
         super.init()
@@ -25,69 +31,55 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
         edgePan.edges = .left
         edgePan.delegate = self
         view.addGestureRecognizer(edgePan)
+        gestureRecognizers.append(edgePan)
 
         if !(view is UIScrollView) {
-            let pan = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            let pan = UIPanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
             pan.cancelsTouchesInView = false
             pan.delegate = self
             view.addGestureRecognizer(pan)
+            gestureRecognizers.append(pan)
         }
     }
 
-    @objc private func handleEdgePan(_ gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
+    @objc private func handleEdgePan(_ gestureRecognizer: UIPanGestureRecognizer) {
         switch gestureRecognizer.state {
-        case .began:
-            gestureRecognizer.setTranslation(.zero, in: gestureRecognizer.view!.superview!)
-            interactionInProgress = true
-            viewController.dismiss(animated: true, completion: nil)
-
         case .changed:
             let translation = gestureRecognizer.translation(in: gestureRecognizer.view!.superview!)
-            let progress = Self.progress(forTranslation: translation.x, threshold: 100)
 
-            update(progress)
-
-            if progress >= 0.5 {
-                gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
-                finish()
+            var translationConstant: CGFloat
+            if (gestureRecognizer is UIScreenEdgePanGestureRecognizer) {
+                translationConstant = translation.x
+            } else {
+                translationConstant = translation.y
             }
 
-        case .cancelled, .ended:
-            interactionInProgress = false
-            cancel()
+            let progress = Self.progress(forTranslation: translationConstant, threshold: 100)
 
-        default:
-            break
-        }
-    }
-
-    @objc private func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
-        let translation = gestureRecognizer.translation(in: gestureRecognizer.view!.superview!)
-        let progress = Self.progress(forTranslation: translation.y, threshold: 200)
-
-        switch gestureRecognizer.state {
-        case .began:
-//            gestureRecognizer.setTranslation(.zero, in: gestureRecognizer.view!.superview!)
-            if progress > 0 {
-                interactionInProgress = true
+            if progress > 0, case .notInteracting = interactionStatus {
+                interactionStatus = .interacting(lastTranslation: translationConstant)
                 viewController.dismiss(animated: true, completion: nil)
             }
 
-        case .changed:
             update(progress)
+            interactionStatus = .interacting(lastTranslation: translationConstant)
 
             if progress >= 0.5 {
-                gestureRecognizer.view?.removeGestureRecognizer(gestureRecognizer)
+                cleanUp()
                 finish()
             }
 
         case .cancelled, .ended:
-            interactionInProgress = false
+            interactionStatus = .notInteracting
             cancel()
 
         default:
             break
         }
+    }
+
+    private func cleanUp() {
+        gestureRecognizers.forEach { viewController.view.removeGestureRecognizer($0) }
     }
 
     private static func progress(forTranslation translation: CGFloat, threshold: CGFloat) -> CGFloat {

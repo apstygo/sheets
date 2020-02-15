@@ -24,10 +24,10 @@ class AppStorePresentationController: UIPresentationController {
 
         closeButton.alpha = 0
         closeButton.translatesAutoresizingMaskIntoConstraints = false
-        presentedViewController.view.addSubview(closeButton)
+        containerView.addSubview(closeButton)
         NSLayoutConstraint.activate([
-            closeButton.rightAnchor.constraint(equalTo: presentedViewController.view.rightAnchor, constant: -20),
-            closeButton.topAnchor.constraint(equalTo: presentedViewController.view.safeAreaLayoutGuide.topAnchor, constant: 20),
+            closeButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20),
+            closeButton.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 20),
             closeButton.heightAnchor.constraint(equalToConstant: 30),
             closeButton.widthAnchor.constraint(equalToConstant: 30),
         ])
@@ -37,6 +37,7 @@ class AppStorePresentationController: UIPresentationController {
         containerView.addSubview(blurView)
 
         let animations = {
+            containerView.bringSubviewToFront(self.closeButton)
             self.closeButton.alpha = 1
             self.blurView.alpha = 1
         }
