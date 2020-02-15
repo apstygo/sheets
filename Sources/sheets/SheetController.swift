@@ -508,6 +508,10 @@ public class SheetController: UIViewController, ScrollableDelegate {
         }
 
         let diff = lastContentOffset.y - scrollView.contentOffset.y
+
+        // diff < 0 means scrolling DOWN (finger moves UPwards)
+        // diff > 0 means scrolling UP (finger moves DOWNwards)
+
         let topInset = scrollView.contentInset.top + scrollView.safeAreaInsets.top
 
         if (diff < 0 && origin > anchorPoints.min()!)
