@@ -22,4 +22,20 @@ public protocol Scrollable: class {
     var delegate: ScrollableDelegate? { get set }
 }
 
+extension UIViewController {
+    /// Returns `self` as `Scrollable` if possible or finds the first `Scrollable` inside of `self` (e.g. if `self` is a `UINavigationController`)
+    func asScrollable() -> Scrollable? {
+        var candidateVC = self
+        if let navigationController = candidateVC as? UINavigationController {
+            candidateVC = navigationController.viewControllers[0]
+        }
+
+        if let scrollable = candidateVC as? Scrollable {
+            return scrollable
+        }
+
+        return nil
+    }
+}
+
 #endif

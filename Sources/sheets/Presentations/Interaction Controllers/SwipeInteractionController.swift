@@ -46,7 +46,7 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
         view.addGestureRecognizer(edgePan)
         gestureRecognizers.append(edgePan)
 
-        if let scrollableVC = viewController as? Scrollable {
+        if let scrollableVC = viewController.asScrollable() {
             scrollableVC.delegate = self
         } else if !(view is UIScrollView) {
             let pan = UIPanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))

@@ -610,12 +610,7 @@ public class SheetController: UIViewController, ScrollableDelegate {
             currentScrollable.delegate = nil
         }
 
-        var candidateVC = viewController
-        if let navigationController = viewController as? UINavigationController {
-            candidateVC = navigationController.viewControllers[0]
-        }
-
-        if let scrollable = candidateVC as? Scrollable {
+        if let scrollable = viewController.asScrollable() {
             scrollable.delegate = self
             currentScrollable = scrollable
         }
