@@ -8,7 +8,8 @@
 import UIKit
 
 private enum Constant {
-    static let threshold: CGFloat = 100
+    static let edgePanDraggingThreshold: CGFloat = 100
+    static let scrollableDraggingThreshold: CGFloat = 200
 }
 
 class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestureRecognizerDelegate, ScrollableDelegate {
@@ -59,10 +60,13 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
     @objc private func handleEdgePan(_ gestureRecognizer: UIPanGestureRecognizer) {
         let translation = gestureRecognizer.translation(in: gestureRecognizer.view!.superview!)
         var translationConstant: CGFloat
+        var threshold: CGFloat
         if (gestureRecognizer is UIScreenEdgePanGestureRecognizer) {
             translationConstant = translation.x
+            threshold = Constant.edgePanDraggingThreshold
         } else {
             translationConstant = translation.y
+            threshold = Constant.scrollableDraggingThreshold
         }
 
         switch gestureRecognizer.state {
@@ -72,7 +76,7 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
 
         case .changed:
             interactionStatus = .interacting(lastTranslation: translationConstant)
-            handleTranslation(translationConstant)
+            handleTranslation(translationConstant, threshold: threshold)
 
         case .cancelled, .ended:
             interactionStatus = .notInteracting
@@ -83,8 +87,8 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
         }
     }
 
-    private func handleTranslation(_ translationConstant: CGFloat) {
-        let progress = Self.progress(forTranslation: translationConstant)
+    private func handleTranslation(_ translationConstant: CGFloat, threshold: CGFloat) {
+        let progress = Self.progress(forTranslation: translationConstant, threshold: threshold)
         update(progress)
 
         if progress >= 0.5 {
@@ -97,8 +101,7 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
         gestureRecognizers.forEach { viewController.view.removeGestureRecognizer($0) }
     }
 
-    private static func progress(forTranslation translation: CGFloat,
-                                 threshold: CGFloat = Constant.threshold) -> CGFloat {
+    private static func progress(forTranslation translation: CGFloat, threshold: CGFloat) -> CGFloat {
         if translation < 0 {
             return 0
         } else if translation < threshold {
@@ -153,7 +156,7 @@ class SwipeInteractionController: UIPercentDrivenInteractiveTransition, UIGestur
 
             let translation = lastTranslation + diff
             interactionStatus = .interacting(lastTranslation: translation)
-            handleTranslation(translation)
+            handleTranslation(translation, threshold: Constant.scrollableDraggingThreshold)
 
             scrollView.showsVerticalScrollIndicator = false
         } else {
