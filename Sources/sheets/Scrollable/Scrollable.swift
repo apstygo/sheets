@@ -19,7 +19,7 @@ import UIKit
 }
 
 public protocol Scrollable: class {
-    var delegate: ScrollableDelegate? { get set }
+    var scrollableDelegate: ScrollableDelegate? { get set }
 }
 
 extension UIViewController {

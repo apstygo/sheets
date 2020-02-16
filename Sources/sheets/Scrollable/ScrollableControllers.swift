@@ -12,23 +12,23 @@ import UIKit
 
 open class ScrollableTableViewController: UITableViewController, Scrollable {
 
-    public weak var delegate: ScrollableDelegate?
+    public weak var scrollableDelegate: ScrollableDelegate?
     public var autoDeselect = true
 
     // MARK: - UIScrollViewDelegate
 
     open override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        delegate?.scrollableWillBeginDragging?(scrollView)
+        scrollableDelegate?.scrollableWillBeginDragging?(scrollView)
     }
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.scrollableDidScroll?(scrollView)
+        scrollableDelegate?.scrollableDidScroll?(scrollView)
     }
 
     open override func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                                  withVelocity velocity: CGPoint,
                                                  targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        delegate?.scrollableWillEndDragging?(scrollView,
+        scrollableDelegate?.scrollableWillEndDragging?(scrollView,
                                              withVelocity: velocity,
                                              targetContentOffset: targetContentOffset)
     }
@@ -45,22 +45,22 @@ open class ScrollableTableViewController: UITableViewController, Scrollable {
 
 open class ScrollableCollectionViewController: UICollectionViewController, Scrollable {
 
-    public weak var delegate: ScrollableDelegate?
+    public weak var scrollableDelegate: ScrollableDelegate?
 
     // MARK: - UIScrollViewDelegate
 
     open override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        delegate?.scrollableWillBeginDragging?(scrollView)
+        scrollableDelegate?.scrollableWillBeginDragging?(scrollView)
     }
 
     open override func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        delegate?.scrollableDidScroll?(scrollView)
+        scrollableDelegate?.scrollableDidScroll?(scrollView)
     }
 
     open override func scrollViewWillEndDragging(_ scrollView: UIScrollView,
                                                  withVelocity velocity: CGPoint,
                                                  targetContentOffset: UnsafeMutablePointer<CGPoint>) {
-        delegate?.scrollableWillEndDragging?(scrollView,
+        scrollableDelegate?.scrollableWillEndDragging?(scrollView,
                                              withVelocity: velocity,
                                              targetContentOffset: targetContentOffset)
     }

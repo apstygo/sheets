@@ -607,11 +607,11 @@ public class SheetController: UIViewController, ScrollableDelegate {
 
     private func bindAsScrollable(viewController: UIViewController) {
         if let currentScrollable = currentScrollable {
-            currentScrollable.delegate = nil
+            currentScrollable.scrollableDelegate = nil
         }
 
         if let scrollable = viewController.asScrollable() {
-            scrollable.delegate = self
+            scrollable.scrollableDelegate = self
             currentScrollable = scrollable
         }
     }
