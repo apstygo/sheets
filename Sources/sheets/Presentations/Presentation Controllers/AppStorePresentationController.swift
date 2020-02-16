@@ -11,7 +11,7 @@ import UIKit
 
 class AppStorePresentationController: UIPresentationController {
 
-    private var closeButton = AppStorePresentationController.createButton()
+    private var closeButton = CloseButton()
     private var blurView = UIVisualEffectView.createBlurView()
 
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
@@ -28,8 +28,6 @@ class AppStorePresentationController: UIPresentationController {
         NSLayoutConstraint.activate([
             closeButton.rightAnchor.constraint(equalTo: containerView.rightAnchor, constant: -20),
             closeButton.topAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.topAnchor, constant: 20),
-            closeButton.heightAnchor.constraint(equalToConstant: 30),
-            closeButton.widthAnchor.constraint(equalToConstant: 30),
         ])
 
         blurView.frame = containerView.bounds
@@ -78,17 +76,6 @@ class AppStorePresentationController: UIPresentationController {
     override func dismissalTransitionDidEnd(_ completed: Bool) {
         if completed {
             closeButton.removeFromSuperview()
-        }
-    }
-
-    private static func createButton() -> UIButton {
-        if #available(iOS 13, *) {
-            let button = UIButton(type: .close)
-            return button
-        } else {
-            let button = UIButton()
-            button.backgroundColor = .red
-            return button
         }
     }
 

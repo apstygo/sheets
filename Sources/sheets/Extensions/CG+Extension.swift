@@ -26,3 +26,9 @@ extension CGRect {
         return CGPoint(x: maxX, y: maxY)
     }
 }
+
+extension CGPoint {
+    func offsetBy(dx: CGFloat, dy: CGFloat) -> CGPoint {
+        return CGPoint(x: x + dx, y: y + dy)
+    }
+}
