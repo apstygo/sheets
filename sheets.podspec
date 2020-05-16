@@ -3,7 +3,7 @@ Pod::Spec.new do |spec|
   # ―――  Spec Metadata  ―――――――――――――――――――――――――――――――――――――――――――――――――――――――――― #
   
   spec.name         = "sheets"
-  spec.version      = "0.9.4"
+  spec.version      = "0.10.0"
   spec.summary      = "A cool-looking sheet controller with fluid animation."
   spec.description  = "sheets provides an API similar to that of UINavigationController, with push and pop functionality. It has customizable anchor points and positioning behavior."
 
