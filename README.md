@@ -77,7 +77,7 @@ Anchors can be set during initialization or via `setAnchors(_:animated:snapTo:)`
 
 ## Examples
 
-You can find sample use cases in this [example app](https://github.com/apstygo/sheets-example).
+You can find sample use cases in this [example app](https://github.com/apstygo/sheets/tree/master/Example).
 
 ## References
 
