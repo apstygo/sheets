@@ -1,6 +1,8 @@
+<body>
 <p align="center">
-  <img height="500" src="Assets/demo.gif"/>
+	<img src="Assets/demo.gif" height=500>
 </p>
+</body>
 
 # sheets
 
@@ -74,6 +76,46 @@ Anchors can be set during initialization or via `setAnchors(_:animated:snapTo:)`
 * You don't have to order anchors in any particular way.
 * The default anchors for each `SheetController` are `defaultExpanded` and `defaultCollapsed`.
 * The exact constants for `defaultExpanded` and `defaultCollapsed` anchors are 20 points from top and 44 points from bottom respectively. The former constant replicates the expanded state of sheet-like UI in Apple's Shortcuts app. The latter constant is nice for a number of reasons: it's just enough to let the user drag on it, and when a navigation controller is presented inside thу sheet, navigation bar just barely touches the bottom in collapsed state. 
+
+## App Store Presentation Style
+
+sheets now also provides a presentation style that tries to emulate news presentation popping from below, just like Apple Arcade's categories. See [AppStoreTransitioningDelegate.swift](https://github.com/apstygo/sheets/blob/master/Sources/sheets/Presentations/Transitioning%20Delegates/AppStoreTransitioningDelegate.swift) for implementation details or [ExampleThreeCoordinator.swift](https://github.com/apstygo/sheets/blob/master/Example/sheets-example/Examples/ExampleThreeCoordinator.swift) for usage examples.
+
+### Features
+
+`AppStoreTransitioningDelegate` presents view controllers by popping them from below while blurring the background. It also adds a close button that does not interfere with your view controller's view hirerachy or layout.
+
+`AppStoreTransitioningDelegate` makes use of `Scrollable` protocol to allow for interactive dismissal through dragging down. Dismissal through left screen edge pan works for all view controllers regardless of `Scrollable` conformance.
+
+### Example usage
+
+```swift
+class CustomPresentingViewController: UIViewController {
+	
+	private let transitioningDelegate = AppStoreTransitioningDelegate()
+	
+	func present(this viewController: UIViewController) {
+		viewController.modalPresentationStyle = .custom
+		viewController.transitioningDelegate = transitioningDelegate
+		present(viewController, animated: true)
+	}
+	
+}
+```
+
+**Note:** Don't forget to retain the transitioning delegate or else this **won't work**.
+
+### How it looks in action
+
+<p align="center">
+	<img src="Assets/Presentation/presented.png" height=500>
+	<img src="Assets/Presentation/dismissing.png" height=500>
+	<img src="Assets/Presentation/dismissed.png" height=500>
+</p>
+
+During the interactive portion of dismissal the view controller just shrinks around its center. When a certain threshold is passed, the view controller is sent downwards and completely dismissed.
+
+Notice how during dismissal animation close button dims and its view's corner radius increases, while backround gradually loses its blur.
 
 ## Examples
 
