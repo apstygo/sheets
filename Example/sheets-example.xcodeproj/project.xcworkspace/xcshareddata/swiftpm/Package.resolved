@@ -1,0 +1,16 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "sheets",
+        "repositoryURL": "https://github.com/apstygo/sheets",
+        "state": {
+          "branch": "master",
+          "revision": "7f8df86e8c2f592fc4ebffad1076dca153c8241f",
+          "version": null
+        }
+      }
+    ]
+  },
+  "version": 1
+}
