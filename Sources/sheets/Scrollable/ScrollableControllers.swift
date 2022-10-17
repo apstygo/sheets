@@ -67,4 +67,45 @@ open class ScrollableCollectionViewController: UICollectionViewController, Scrol
 
 }
 
+open class ScrollablePageViewController: UIPageViewController, UIPageViewControllerDelegate, Scrollable {
+
+    public weak var scrollableDelegate: ScrollableDelegate? {
+        didSet {
+            setDelegateOnScrollable()
+        }
+    }
+
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+
+        delegate = self
+    }
+
+    open override func setViewControllers(_ viewControllers: [UIViewController]?,
+                                          direction: UIPageViewController.NavigationDirection,
+                                          animated: Bool,
+                                          completion: ((Bool) -> Void)? = nil) {
+        super.setViewControllers(
+            viewControllers,
+            direction: direction,
+            animated: animated,
+            completion: completion
+        )
+
+        setDelegateOnScrollable()
+    }
+
+    open func pageViewController(_ pageViewController: UIPageViewController,
+                                 didFinishAnimating finished: Bool,
+                                 previousViewControllers: [UIViewController],
+                                 transitionCompleted completed: Bool) {
+        setDelegateOnScrollable()
+    }
+
+    private func setDelegateOnScrollable() {
+        (viewControllers?.first as? Scrollable)?.scrollableDelegate = scrollableDelegate
+    }
+
+}
+
 #endif
